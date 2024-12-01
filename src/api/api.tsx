@@ -794,4 +794,59 @@ export const getAdminDetailsApi = async () => {
     }
 }
 
+export const getEventsRunFancyDataApi = async () => {
+    try {
+        const response = await axios.get(`${URL}/redis/get-events-by-fancy`);
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const getFancyDataByEventIdApi = async (eventId: string) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/redis/get-fancy-eventId?eventId=${eventId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const updateFancyResultApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/redis/update-fancy-result`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
 export default URL;
