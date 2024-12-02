@@ -287,6 +287,21 @@
   padding-top: 1px;
 }
 
+.account-sidebar-menu-disabled {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.account-sidebar-menu-disabled p {
+  /* text-[16px] font-[500] pt-[1px] */
+  font-size: 16px;
+  font-weight: 500;
+  padding-top: 1px;
+}
+
 /* ============ card CSS ============ */
 
 /* ============ front side ============ */

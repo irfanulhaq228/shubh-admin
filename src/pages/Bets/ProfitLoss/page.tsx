@@ -1,6 +1,6 @@
 import moment from "moment";
 import { DatePicker } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import { FaCalendarAlt } from "react-icons/fa";
@@ -8,8 +8,10 @@ import { FaCalendarAlt } from "react-icons/fa";
 import Loader from "../../../components/Loader";
 import { getClosedBetsByAdminApi } from "../../../api/api";
 import ProfitLossTable from "../../../components/Bets/ProfitLoss/ProfitLossTable";
+import { updateBetsPage } from "../../../features/features";
 
 const ProfitLoss = ({ colors }: any) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [originalData, setOriginal] = useState([]);
   const [loader, setLoader] = useState(true);
@@ -36,6 +38,7 @@ const ProfitLoss = ({ colors }: any) => {
   };
 
   useEffect(() => {
+    dispatch(updateBetsPage("profit-loss"))
     fn_getUserBets();
   }, []);
 

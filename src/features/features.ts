@@ -9,7 +9,9 @@ const initialState = {
   dashboardDarkTheme: false,
   colorScheme: "color1",
   smallSidebar: false,
-  wallet: 0
+  wallet: 0,
+  loginType: "",
+  betPage: "current-bets"
 };
 
 export const featuresSlice = createSlice({
@@ -42,6 +44,12 @@ export const featuresSlice = createSlice({
     },
     updateWallet: (state, action) => {
       state.wallet = action.payload;
+    },
+    updateLoginType: (state, action) => {
+      state.loginType = action.payload;
+    },
+    updateBetsPage: (state, action) => {
+      state.betPage = action.payload;
     }
   },
 });
@@ -55,6 +63,8 @@ export const {
   updateDarkTheme,
   updateColorScheme,
   updateSmallsidebar,
-  updateWallet
+  updateWallet,
+  updateLoginType,
+  updateBetsPage
 } = featuresSlice.actions;
 export const featuresReducer = featuresSlice.reducer;

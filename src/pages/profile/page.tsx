@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
-import Table1 from "../../components/Dashboard/Table1";
+// import Table1 from "../../components/Dashboard/Table1";
 import useColorScheme from "../../hooks/useColorScheme";
 import { getAdminDashboardDataApi } from "../../api/api";
 
@@ -94,13 +94,13 @@ const Profile = ({ darkTheme }: any) => {
             />
           </div>
           {/* table & pagination */}
-          <div
+          {/* <div
             className="my-[10px] sm:my-[15px] rounded-[22px] pb-[10px] sm:p-[10px] md:px-[15px]"
             style={{ backgroundColor: colors.dark }}
           >
             <p className="text-[20px] font-[600] pt-[10px] pb-[5px] sm:pb-0 sm:pt-0 sm:my-[5px] ps-[15px] md:ps-0" style={{ color: colors.text }}>Running Games</p>
             <Table1 colors={colors} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

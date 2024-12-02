@@ -1,5 +1,5 @@
 import Aos from "aos";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
@@ -10,11 +10,13 @@ import useColorScheme from "../../hooks/useColorScheme";
 import { MdHistory } from "react-icons/md";
 import { VscGraph } from "react-icons/vsc";
 import { BsGraphUpArrow } from "react-icons/bs";
+import { updateBetsPage } from "../../features/features";
 
 const Bets = ({ darkTheme }: any) => {
+  const dispatch = useDispatch();
+  const selectedTab = useSelector((state:any) => state.betPage);
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedTab, setSelectedTab] = useState("current-bets");
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
   const dashboardDarkTheme = useSelector((state: any) => state.dashboardDarkTheme);
   const colorScheme = useSelector((state: any) => state.colorScheme);
@@ -31,8 +33,8 @@ const Bets = ({ darkTheme }: any) => {
   }, [navigate, location.pathname]);
 
   const handleNavigation = (path: string) => {
-    setSelectedTab(path);
     navigate(path);
+    dispatch(updateBetsPage(path))
   };
 
   return (

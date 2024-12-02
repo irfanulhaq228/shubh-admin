@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const URL = "http://62.72.57.126:8000";
+const URL = "http://62.72.57.126:5000";
 
 export const formatDate = (dateString: any) => {
     const optionsDate: any = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -14,11 +14,16 @@ export const formatDate = (dateString: any) => {
     return `${formattedDate}, ${formattedTime}`;
 };
 
-export const adminLoginApi = async (data: { email: string; password: string }) => {
+export const adminLoginApi = async (data: { email: string; password: string, type: string }) => {
     try {
         const response = await axios.post(`${URL}/admin/login`, data);
         if (response.status === 200) {
-            return { status: true, message: "OTP sent to your Email", id: response.data.id }
+            if (data.type === "admin") {
+                return { status: true, message: "OTP sent to your Email", id: response.data.id }
+            }else{
+                Cookies.set('adminToken', response?.data?.token)
+                return { status: true, message: "Staff LoggedIn Successfully" }
+            }
         }
     } catch (error: any) {
         if (error?.status === 401) {
@@ -968,6 +973,26 @@ export const deleteStaffApi = async (id: string) => {
     try {
         const token = Cookies.get('adminToken');
         const response = await axios.delete(`${URL}/staff/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const fn_getUserInfoApi = async (id: string) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/user/get-info/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

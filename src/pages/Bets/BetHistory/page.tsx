@@ -1,5 +1,5 @@
 import { DatePicker } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import moment from "moment";
 
@@ -7,8 +7,10 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { getClosedBetsByAdminApi } from "../../../api/api";
 import Loader from "../../../components/Loader";
 import BetHistoryTable from "../../../components/Bets/BetHistory/BetHistoryTable";
+import { updateBetsPage } from "../../../features/features";
 
 const BetHistory = ({ colors }: any) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [originalData, setOriginal] = useState([]);
   const [loader, setLoader] = useState(true);
@@ -36,6 +38,7 @@ const BetHistory = ({ colors }: any) => {
   };
 
   useEffect(() => {
+    dispatch(updateBetsPage("bet-history"))
     fn_getUserCloseBets();
   }, []);
 

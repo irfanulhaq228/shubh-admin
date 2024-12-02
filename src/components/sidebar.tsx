@@ -20,6 +20,7 @@ import { IoPeople } from "react-icons/io5";
 const Sidebar = ({ colors, path }: any) => {
   const dispatch = useDispatch();
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
+  const loginType = useSelector((state: any) => state.loginType) || localStorage.getItem('loginType');
   return (
     <div
       className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${smallSidebar ? "w-[50px]" : "w-[250px]"
@@ -49,6 +50,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/dashboard"}
           icon={<LuLayoutDashboard className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Games"}
@@ -58,6 +60,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/games"}
           icon={<MdCasino className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Users"}
@@ -67,6 +70,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/users"}
           icon={<FaUser className="text-[18px] me-[3px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Bets"}
@@ -76,6 +80,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/bets"}
           icon={<SiBetfair className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"My Wallet"}
@@ -85,6 +90,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/wallet"}
           icon={<LuWallet2 className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         {/* <Menus
           title={"Deposit/Withdraw"}
@@ -94,6 +100,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/deposit-withdraw"}
           icon={<BsBank className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         /> */}
         {/* <Menus
           title={"Account Statement"}
@@ -103,6 +110,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/account-statement"}
           icon={<GiNotebook className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         /> */}
         {/* <Menus
           title={"Bonus Statement"}
@@ -112,6 +120,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/bonus-statement"}
           icon={<FaHandHoldingDollar className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         /> */}
         <Menus
           title={"Payment Information"}
@@ -121,6 +130,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/payment-info"}
           icon={<ImCreditCard className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Deposit/Withdraw"}
@@ -130,6 +140,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/deposit-withdraw"}
           icon={<BsBank className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Web Settings"}
@@ -139,6 +150,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/web-settings"}
           icon={<AiOutlineDesktop className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Login History"}
@@ -148,6 +160,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/login-history"}
           icon={<MdOutlineHistory className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Staff Management"}
@@ -157,6 +170,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/staff-management"}
           icon={<IoPeople className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Fancy Market"}
@@ -166,6 +180,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/fancy-data"}
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={false}
         />
         <Menus
           title={"Bookmaker Market"}
@@ -175,6 +190,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/bookmaker-data"}
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
+          disabled={false}
         />
       </div>
     </div>
@@ -191,11 +207,24 @@ const Menus = ({
   url,
   icon,
   smallSidebar,
+  disabled
 }: any) => {
-  return (
+  return (disabled ? (
+    <p
+      className={`account-sidebar-menu-disabled`}
+      style={{
+        color: colors.text,
+        backgroundColor: "rgb(200, 200, 200)",
+        cursor: "not-allowed"
+      }}
+    >
+      {icon}
+      {!smallSidebar && <p>{title}</p>}
+    </p>
+  ) : (
     <Link
       to={url}
-      className="account-sidebar-menu"
+      className={`account-sidebar-menu`}
       style={{
         color: colors.text,
         backgroundColor: path === pathEquals && colors.dark,
@@ -204,5 +233,6 @@ const Menus = ({
       {icon}
       {!smallSidebar && <p>{title}</p>}
     </Link>
+  )
   );
 };

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 import useColorScheme from "../../hooks/useColorScheme";
-import WalletTable from "../../components/Wallet/Table";
+// import WalletTable from "../../components/Wallet/Table";
 
 import { FaIndianRupeeSign } from "react-icons/fa6";
 
@@ -44,12 +44,12 @@ const Wallet = ({ darkTheme }: any) => {
           >
             <FaIndianRupeeSign />{wallet}
           </p>
-          <div
+          {/* <div
             className="my-[10px] sm:my-[15px] rounded-[22px] pb-[10px] sm:p-[10px] md:px-[15px]"
             style={{ backgroundColor: colors.dark }}
           >
             <WalletTable colors={colors} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getOpenBetsByAdminApi } from "../../../api/api";
 import CurrentBetTable1 from "../../../components/Bets/CurrentBets/CurrentBetTable1";
 import Loader from "../../../components/Loader";
+import { updateBetsPage } from "../../../features/features";
 
 // import CurrentBetTable2 from "../../../../components/account/Bets/CurrentBets/CurrentBetTable2";
 
 const CurrentBets = ({ colors }: any) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [originalData, setOriginal] = useState([]);
   const [loader, setLoader] = useState(true);
@@ -22,6 +24,7 @@ const CurrentBets = ({ colors }: any) => {
     setLoader(false);
   }
   useEffect(() => {
+    dispatch(updateBetsPage("current-bets"))
     fn_getUserCurrentBets();
   }, []);
   const fn_applyFilter = async (value: string) => {

@@ -140,6 +140,7 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
         <button
           onClick={() => {
             Cookies.remove('adminToken');
+            Cookies.remove('loginType');
             navigate("/")
           }
           }

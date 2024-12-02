@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { FormEvent, useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 import Loader from "../../components/Loader";
 import { adminLoginApi } from "../../api/api";
@@ -7,8 +8,12 @@ import { ModalOTP } from "../../components/ModalOTP";
 
 // import img from "../../assets/login-bg.jpg";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
+import { useDispatch } from "react-redux";
+import { updateLoginType } from "../../features/features";
 
 const Login = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordType, setPasswordType] = useState("password");
@@ -33,12 +38,20 @@ const Login = () => {
             return toast.error("Enter Password");
         }
         setLoader(true);
-        const response: any = await adminLoginApi({ email, password });
+        localStorage.setItem('loginType', loginType);
+        dispatch(updateLoginType(loginType));
+        const response: any = await adminLoginApi({ email, password, type: loginType });
         if (response.status) {
-            setLoader(false);
-            setId(response?.id);
-            toast.success(response?.message);
-            return setOpenOTP(true);
+            if (loginType === "admin") {
+                setLoader(false);
+                setId(response?.id);
+                toast.success(response?.message);
+                return setOpenOTP(true);
+            } else {
+                setLoader(false);
+                toast.success(response?.message);
+                return navigate("/fancy-data");
+            }
         } else {
             setLoader(false);
             return toast.error(response?.message);

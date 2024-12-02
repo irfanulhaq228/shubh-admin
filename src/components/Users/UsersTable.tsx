@@ -9,6 +9,7 @@ import { FaIndianRupeeSign } from 'react-icons/fa6';
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FormEvent } from 'react';
 import { deleteUserByIdApi, userStatusUpdateApi } from '../../api/api';
+import { IoEye } from 'react-icons/io5';
 
 const UsersTable = ({ colors, data, setData }: any) => {
     return (
@@ -21,13 +22,13 @@ const UsersTable = ({ colors, data, setData }: any) => {
                             className="leading-[40px] font-[600] text-[15px]"
                             style={{ color: colors.text, backgroundColor: colors.light }}
                         >
-                            <td className="ps-[5px]">Game</td>
-                            <td>Total Bets</td>
-                            <td>Running Bets</td>
-                            <td>Total Deposit</td>
-                            <td>Total Withdraw</td>
+                            <td className="ps-[5px]">User Name</td>
+                            <td>Phone</td>
+                            {/* <td>Running Bets</td> */}
+                            {/* <td>Total Deposit</td> */}
+                            {/* <td>Total Withdraw</td> */}
                             <td>Wallet Amount</td>
-                            <td>Win Ratio</td>
+                            {/* <td>Win Ratio</td> */}
                             <td>Disable/Delete</td>
                         </tr>
                     </thead>
@@ -82,13 +83,13 @@ const TableRows = ({ user, colors, win, image, link, setData, data }: any) => {
             style={{ borderColor: colors.line, color: colors.subText }}
             onClick={() => navigate(link)}
         >
-            <td className="ps-[5px] flex items-center gap-[13px] capitalize">{image}{user.username}</td>
-            <td>45</td>
-            <td>5</td>
-            <td><FaIndianRupeeSign className='inline-block me-[4px]' />105000</td>
-            <td><FaIndianRupeeSign className='inline-block me-[4px]' />30000</td>
-            <td><FaIndianRupeeSign className='inline-block me-[4px]' />25000</td>
-            <td>
+            <td className="ps-[5px] flex items-center gap-[13px] capitalize">{user.username}</td>
+            <td>{user?.phone}</td>
+            {/* <td>5</td> */}
+            {/* <td><FaIndianRupeeSign className='inline-block me-[4px]' />105000</td> */}
+            {/* <td><FaIndianRupeeSign className='inline-block me-[4px]' />30000</td> */}
+            <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
+            {/* <td>
                 <p className='text-white text-[13px] font-[500]'>
                     {!win ? (
                         <span className='bg-[#ff5d5d] px-[10px] py-[6px] rounded-[6px]'>
@@ -100,7 +101,7 @@ const TableRows = ({ user, colors, win, image, link, setData, data }: any) => {
                         </span>
                     )}
                 </p>
-            </td>
+            </td> */}
             <td>
                 <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
                 <MdDeleteForever
@@ -108,6 +109,7 @@ const TableRows = ({ user, colors, win, image, link, setData, data }: any) => {
                     title='delete'
                     onClick={handleDelete}
                 />
+                <IoEye className='inline-block ms-[10px] text-[21px] cursor-pointer' />
             </td>
         </tr>
     );
