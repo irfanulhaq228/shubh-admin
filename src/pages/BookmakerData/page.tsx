@@ -5,85 +5,110 @@ import { FormEvent, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 import useColorScheme from "../../hooks/useColorScheme";
-import { getEventsRunFancyDataApi, getFancyDataByEventIdApi, updateFancyResultApi } from "../../api/api";
+import { getActiveSportsByAdmin, getBookmakerDataByEventIdApi, getEventsRunBookmakerDataApi, updateBookmakerResultApi } from "../../api/api";
 
-const FancyData = ({ darkTheme }: any) => {
-    const [fancyData, setFancyData] = useState([]);
+const BookmakerData = ({ darkTheme }: any) => {
+    const [sports, setSports] = useState([]);
+    const [selectedSport, setSelectedSport] = useState<any>({});
+
     const [eventsData, setEventData] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState<any>({});
+
+    const [bookmakerData, setBookmakerData] = useState([]);
+
     const smallSidebar = useSelector((state: any) => state.smallSidebar);
 
-    const dashboardDarkTheme = useSelector(
-        (state: any) => state.dashboardDarkTheme
-    );
+    const dashboardDarkTheme = useSelector((state: any) => state.dashboardDarkTheme);
 
     const colorScheme = useSelector((state: any) => state.colorScheme);
     const colors = useColorScheme(dashboardDarkTheme, colorScheme);
 
-    const fn_getEventsRunFancyData = async () => {
-        const response = await getEventsRunFancyDataApi();
+    const fn_getActiveSportsByAdmin = async () => {
+        const response = await getActiveSportsByAdmin();
+        if (response?.status) {
+            setSports(response?.data?.data);
+            setSelectedSport(response?.data?.data?.[0]);
+        }
+    }
+
+    const fn_getEventsRunBookmakerData = async (sport: any) => {
+        const response = await getEventsRunBookmakerDataApi(sport?.name);
         if (response?.status) {
             setEventData(response?.data);
             setSelectedEvent(response?.data?.[0]);
         }
     }
 
-    const fnInterval_getEventsRunFancyData = async () => {
-        const response = await getEventsRunFancyDataApi();
+    const fnInterval_getEventsRunBookmakerData = async (sport: any) => {
+        const response = await getEventsRunBookmakerDataApi(sport?.name);
         if (response?.status) {
             setEventData(response?.data);
         }
     }
 
-    const fn_getFancyDataByEventId = async (eventId: string) => {
-        const response = await getFancyDataByEventIdApi(eventId);
+    const fn_getBookmakerDataByEventId = async (eventId: string) => {
+        const response = await getBookmakerDataByEventIdApi(eventId);
         if (response?.status) {
-            setFancyData(response?.data);
+            setBookmakerData(response?.data);
         }
     }
 
     useEffect(() => {
-        fn_getEventsRunFancyData();
-        const eventInterval = setInterval(fnInterval_getEventsRunFancyData, 10000);
-
-        return () => {
-            clearInterval(eventInterval);
-        };
+        fn_getActiveSportsByAdmin();
     }, []);
 
     useEffect(() => {
-        if (Object.keys(selectedEvent)?.length > 0) {
-            fn_getFancyDataByEventId(selectedEvent?.eventId);
-            const fancyDataInterval = setInterval(() => {
-                fn_getFancyDataByEventId(selectedEvent?.eventId);
+        setBookmakerData([]);
+        if (Object.keys(selectedSport)?.length > 0) {
+            fn_getEventsRunBookmakerData(selectedSport);
+            const eventInterval = setInterval(() => fnInterval_getEventsRunBookmakerData(selectedSport), 30000);
+            return () => {
+                clearInterval(eventInterval);
+            };
+        }
+    }, [selectedSport]);
+
+    useEffect(() => {
+        if (selectedEvent && Object.keys(selectedEvent)?.length > 0) {
+            fn_getBookmakerDataByEventId(selectedEvent?.eventId);
+            const bookmakerDataInterval = setInterval(() => {
+                fn_getBookmakerDataByEventId(selectedEvent?.eventId);
             }, 5000);
 
             return () => {
-                clearInterval(fancyDataInterval);
+                clearInterval(bookmakerDataInterval);
             };
         }
     }, [selectedEvent]);
 
     return (
         <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
-            <Sidebar colors={colors} path={"fancyData"} />
+            <Sidebar colors={colors} path={"bookmakerData"} />
             <div
                 className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
                     }`}
             >
-                <Navbar pageName={"Fancy Data"} darkTheme={darkTheme} colors={colors} />
+                <Navbar pageName={"Bookmaker Market"} darkTheme={darkTheme} colors={colors} />
                 <div className="mt-[15px] px-[10px] sm:px-[20px] pb-[30px]">
-                    <p className="text-[20px] font-[500]">Matches in which Fancy's Run</p>
+                    <p className="text-[20px] font-[500]">Sports</p>
+                    <div className="mt-[5px] flex gap-[15px] overflow-x-auto">
+                        {sports?.length > 0 && sports?.map((sport) => (
+                            <Sport colors={colors} sport={sport} selectedSport={selectedSport} setSelectedSport={setSelectedSport} />
+                        ))}
+                    </div>
+
+                    <p className="text-[20px] font-[500] mt-[15px]">Matches in which Bookmaker Market Runs</p>
                     <div className="mt-[5px] flex gap-[15px] overflow-x-auto">
                         {eventsData?.length > 0 && eventsData?.map((item) => (
                             <Button colors={colors} item={item} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
                         ))}
                     </div>
+
                     <div className="mt-[15px] flex flex-col gap-[10px]">
-                        {fancyData?.length > 0 ? fancyData?.map((item) => (
-                            <FancyBox colors={colors} item={item} selectedEvent={selectedEvent} />
+                        {bookmakerData?.length > 0 ? bookmakerData?.map((item) => (
+                            <BookmakerBox colors={colors} item={item} selectedEvent={selectedEvent} />
                         )) : (
-                            <p className="text-center font-[500]">No Fancy Data Found</p>
+                            <p className="text-center font-[500]">No Bookmaker Data Found</p>
                         )}
                     </div>
                 </div>
@@ -92,7 +117,20 @@ const FancyData = ({ darkTheme }: any) => {
     );
 };
 
-export default FancyData;
+export default BookmakerData;
+
+const Sport = ({ colors, sport, selectedSport, setSelectedSport }: any) => {
+    return (
+        <button
+            key={sport?.name}
+            onClick={() => setSelectedSport(sport)}
+            className={`min-w-[max-content] text-nowrap text-[15px] font-[500] h-[40px] rounded-[7px] max-w-[max-content] px-[20px] flex justify-center items-center capitalize`}
+            style={selectedSport?.name === sport?.name ? { backgroundColor: colors.text, color: colors?.light } : { backgroundColor: colors?.light, color: colors?.text }}
+        >
+            {sport?.name}
+        </button>
+    )
+}
 
 const Button = ({ colors, item, selectedEvent, setSelectedEvent }: any) => {
     return (
@@ -108,7 +146,7 @@ const Button = ({ colors, item, selectedEvent, setSelectedEvent }: any) => {
     )
 }
 
-const FancyBox = ({ colors, item, selectedEvent }: any) => {
+const BookmakerBox = ({ colors, item, selectedEvent }: any) => {
     const [resultInput, setResultInput] = useState(item?.result || "");
     useEffect(() => {
         setResultInput(item?.result || "");
@@ -116,13 +154,13 @@ const FancyBox = ({ colors, item, selectedEvent }: any) => {
     const fn_submit = async (e: FormEvent) => {
         e.preventDefault();
         const data = {
-            fancy: item,
+            bookmaker: item,
             result: resultInput,
             eventId: selectedEvent?.eventId
         }
-        const response = await updateFancyResultApi(data);
+        const response = await updateBookmakerResultApi(data);
         if (response?.status) {
-            return toast.success("Fancy Data Updated");
+            return toast.success("Bookmaker Data Updated");
         }
     }
     return (

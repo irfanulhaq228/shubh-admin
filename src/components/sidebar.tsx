@@ -15,21 +15,20 @@ import { updateSmallsidebar } from "../features/features";
 import { FaUser } from "react-icons/fa";
 import { AiOutlineDesktop } from "react-icons/ai";
 import { BsBank } from "react-icons/bs";
+import { IoPeople } from "react-icons/io5";
 
 const Sidebar = ({ colors, path }: any) => {
   const dispatch = useDispatch();
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
   return (
     <div
-      className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${
-        smallSidebar ? "w-[50px]" : "w-[250px]"
-      }`}
+      className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${smallSidebar ? "w-[50px]" : "w-[250px]"
+        }`}
       style={{ backgroundColor: colors.light }}
     >
       <RiArrowLeftDoubleLine
-        className={`text-[18px] absolute top-[10px] cursor-pointer transition-all duration-300 ${
-          smallSidebar ? "-rotate-180 right-[15px]" : "right-[10px]"
-        }`}
+        className={`text-[18px] absolute top-[10px] cursor-pointer transition-all duration-300 ${smallSidebar ? "-rotate-180 right-[15px]" : "right-[10px]"
+          }`}
         onClick={() => dispatch(updateSmallsidebar(!smallSidebar))}
         style={{ color: colors.text }}
       />
@@ -151,11 +150,29 @@ const Sidebar = ({ colors, path }: any) => {
           smallSidebar={smallSidebar}
         />
         <Menus
-          title={"Fancy's Data"}
+          title={"Staff Management"}
+          colors={colors}
+          pathEquals={"staffManagement"}
+          path={path}
+          url={"/staff-management"}
+          icon={<IoPeople className="text-[20px]" />}
+          smallSidebar={smallSidebar}
+        />
+        <Menus
+          title={"Fancy Market"}
           colors={colors}
           pathEquals={"fancyData"}
           path={path}
           url={"/fancy-data"}
+          icon={<MdAutoGraph className="text-[20px]" />}
+          smallSidebar={smallSidebar}
+        />
+        <Menus
+          title={"Bookmaker Market"}
+          colors={colors}
+          pathEquals={"bookmakerData"}
+          path={path}
+          url={"/bookmaker-data"}
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
         />

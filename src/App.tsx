@@ -20,6 +20,8 @@ import Users from "./pages/Users/page";
 import UserById from "./pages/UserById/page";
 import WebSettings from "./pages/WebSetting/page";
 import FancyData from "./pages/FancyData/page";
+import BookmakerData from "./pages/BookmakerData/page";
+import StaffManagement from "./pages/StaffManagement/page";
 
 import Bets from "./pages/Bets/page";
 import CurrentBets from "./pages/Bets/CurrentBets/page";
@@ -47,6 +49,8 @@ function App() {
       <Route path="/web-settings" element={<WebSettings darkTheme={darkTheme} />} />
       <Route path="/login-history" element={<LoginHistory darkTheme={darkTheme} />} />
       <Route path="/fancy-data" element={<FancyData darkTheme={darkTheme} />} />
+      <Route path="/bookmaker-data" element={<BookmakerData darkTheme={darkTheme} />} />
+      <Route path="/staff-management" element={<StaffManagement darkTheme={darkTheme} />} />
 
       <Route path="/bets" element={<Bets darkTheme={darkTheme} />}>
         <Route path="current-bets" index element={<CurrentBets colors={colors} />} />

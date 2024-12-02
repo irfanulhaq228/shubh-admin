@@ -849,4 +849,139 @@ export const updateFancyResultApi = async (data: any) => {
     }
 }
 
+export const getActiveSportsByAdmin = async () => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/game/available`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const getEventsRunBookmakerDataApi = async (sportName: string) => {
+    try {
+        const response = await axios.get(`${URL}/redis/get-events-by-bookmaker/${sportName}`);
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const getBookmakerDataByEventIdApi = async (eventId: string) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/redis/get-bookmaker-eventId?eventId=${eventId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const updateBookmakerResultApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/redis/update-bookmaker-result`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const createStaffApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/staff`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const getStaffsApi = async () => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/staff`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const deleteStaffApi = async (id: string) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.delete(`${URL}/staff/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
 export default URL;
