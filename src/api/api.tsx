@@ -20,7 +20,7 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
         if (response.status === 200) {
             if (data.type === "admin") {
                 return { status: true, message: "OTP sent to your Email", id: response.data.id }
-            }else{
+            } else {
                 Cookies.set('adminToken', response?.data?.token)
                 return { status: true, message: "Staff LoggedIn Successfully" }
             }

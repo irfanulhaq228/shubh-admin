@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
@@ -23,6 +23,9 @@ const BookmakerData = ({ darkTheme }: any) => {
     const colorScheme = useSelector((state: any) => state.colorScheme);
     const colors = useColorScheme(dashboardDarkTheme, colorScheme);
 
+    const [selectedWinner, setSelectedWinner] = useState("");
+    const [innitialWinner, setInnitialWinner] = useState("");
+
     const fn_getActiveSportsByAdmin = async () => {
         const response = await getActiveSportsByAdmin();
         if (response?.status) {
@@ -36,6 +39,7 @@ const BookmakerData = ({ darkTheme }: any) => {
         if (response?.status) {
             setEventData(response?.data);
             setSelectedEvent(response?.data?.[0]);
+
         }
     }
 
@@ -47,6 +51,19 @@ const BookmakerData = ({ darkTheme }: any) => {
     }
 
     const fn_getBookmakerDataByEventId = async (eventId: string) => {
+        const response = await getBookmakerDataByEventIdApi(eventId);
+        if (response?.status) {
+            setBookmakerData(response?.data);
+            const winnerBookmaker = response?.data?.find((b: any) => b?.result && b?.result === "yes");
+            if (winnerBookmaker) setSelectedWinner(`${winnerBookmaker?.mid}-${winnerBookmaker?.sid}`);
+            if (winnerBookmaker) setInnitialWinner(`${winnerBookmaker?.mid}-${winnerBookmaker?.sid}`);
+            const abandonedBookmaker = response?.data?.find((b: any) => b?.result && b?.result === "abandoned");
+            if (abandonedBookmaker) setSelectedWinner(`abandoned`);
+            if (abandonedBookmaker) setInnitialWinner(`abandoned`);
+        }
+    }
+
+    const fnInterval_getBookmakerDataByEventId = async (eventId: string) => {
         const response = await getBookmakerDataByEventIdApi(eventId);
         if (response?.status) {
             setBookmakerData(response?.data);
@@ -69,17 +86,34 @@ const BookmakerData = ({ darkTheme }: any) => {
     }, [selectedSport]);
 
     useEffect(() => {
+        setSelectedWinner("");
         if (selectedEvent && Object.keys(selectedEvent)?.length > 0) {
             fn_getBookmakerDataByEventId(selectedEvent?.eventId);
             const bookmakerDataInterval = setInterval(() => {
-                fn_getBookmakerDataByEventId(selectedEvent?.eventId);
-            }, 5000);
-
+                fnInterval_getBookmakerDataByEventId(selectedEvent?.eventId);
+            }, 15000);
             return () => {
                 clearInterval(bookmakerDataInterval);
             };
         }
     }, [selectedEvent]);
+
+    const fn_assignWinner = async (e: any) => {
+        e.preventDefault();
+        if (selectedWinner === innitialWinner) return;
+        const promises = bookmakerData?.map(async (bookmaker: any) => {
+            const sureSelect = `${bookmaker?.mid}-${bookmaker?.sid}` === selectedWinner ? `yes` : selectedWinner === "abandoned" ? "abandoned" : "no";
+            const data = {
+                bookmaker,
+                result: sureSelect,
+                eventId: selectedEvent?.eventId
+            };
+            await updateBookmakerResultApi(data);
+        });
+        await Promise.all(promises);
+
+        return toast.success("Bookmaker Result Updated");
+    };
 
     return (
         <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
@@ -91,23 +125,46 @@ const BookmakerData = ({ darkTheme }: any) => {
                 <Navbar pageName={"Bookmaker Market"} darkTheme={darkTheme} colors={colors} />
                 <div className="mt-[15px] px-[10px] sm:px-[20px] pb-[30px]">
                     <p className="text-[20px] font-[500]">Sports</p>
+                    {/* sports mapped */}
                     <div className="mt-[5px] flex gap-[15px] overflow-x-auto">
                         {sports?.length > 0 && sports?.map((sport) => (
                             <Sport colors={colors} sport={sport} selectedSport={selectedSport} setSelectedSport={setSelectedSport} />
                         ))}
                     </div>
-
+                    {/* events mapped */}
                     <p className="text-[20px] font-[500] mt-[15px]">Matches in which Bookmaker Market Runs</p>
                     <div className="mt-[5px] flex gap-[15px] overflow-x-auto">
                         {eventsData?.length > 0 && eventsData?.map((item) => (
                             <Button colors={colors} item={item} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
                         ))}
                     </div>
-
+                    {/* select */}
                     <div className="mt-[15px] flex flex-col gap-[10px]">
-                        {bookmakerData?.length > 0 ? bookmakerData?.map((item) => (
-                            <BookmakerBox colors={colors} item={item} selectedEvent={selectedEvent} />
-                        )) : (
+                        {bookmakerData?.length > 0 ? (
+                            <form>
+                                <p className="font-[500] mt-[10px]">Choose Winner</p>
+                                <select
+                                    className="w-full border h-[40px] rounded-[5px] px-[15px] text-[15px] font-[500]"
+                                    onChange={(e) => setSelectedWinner(e.target.value)}
+                                >
+                                    <option selected={selectedWinner === ""} disabled value={""}>--- Choose ---</option>
+                                    {bookmakerData?.map((item: any) => (
+                                        <option selected={selectedWinner === item?.nat} value={`${item?.mid}-${item?.sid}`}>{item?.nat}</option>
+                                    ))}
+                                    <option value={"abandoned"} selected={selectedWinner === "abandoned"}>Abandoned</option>
+                                </select>
+                                <button
+                                    onClick={fn_assignWinner}
+                                    className="text-[15px] font-[500] h-[40px] w-[150px] rounded-[7px] text-white mt-[10px]"
+                                    style={{
+                                        backgroundColor: colors?.text,
+                                        color: colors?.light
+                                    }}
+                                >
+                                    Submit
+                                </button>
+                            </form>
+                        ) : (
                             <p className="text-center font-[500]">No Bookmaker Data Found</p>
                         )}
                     </div>
@@ -143,44 +200,5 @@ const Button = ({ colors, item, selectedEvent, setSelectedEvent }: any) => {
             <span>{item?.competitionName}</span>
             <span>{item?.eventName}</span>
         </button>
-    )
-}
-
-const BookmakerBox = ({ colors, item, selectedEvent }: any) => {
-    const [resultInput, setResultInput] = useState(item?.result || "");
-    useEffect(() => {
-        setResultInput(item?.result || "");
-    }, [item, selectedEvent]);
-    const fn_submit = async (e: FormEvent) => {
-        e.preventDefault();
-        const data = {
-            bookmaker: item,
-            result: resultInput,
-            eventId: selectedEvent?.eventId
-        }
-        const response = await updateBookmakerResultApi(data);
-        if (response?.status) {
-            return toast.success("Bookmaker Data Updated");
-        }
-    }
-    return (
-        <div className="min-h-[80px] rounded-[10px] p-[20px] flex justify-between items-center py-[20px]" style={{ backgroundColor: colors.light }}>
-            <p style={{ color: colors?.subText }}>{item?.nat}</p>
-            <form className="flex gap-[10px]" onSubmit={fn_submit}>
-                <input
-                    value={resultInput}
-                    onChange={(e) => setResultInput(e.target.value)}
-                    placeholder="Enter Result..."
-                    className="h-[40px] rounded-[8px] min-w-[150px] text-[14px] px-[15px]"
-                />
-                <button
-                    type="submit"
-                    style={{ backgroundColor: colors.text, color: colors?.light }}
-                    className="min-w-[max-content] text-nowrap text-[15px] font-[500] h-[40px] rounded-[7px] max-w-[max-content] px-[20px] flex justify-center items-center"
-                >
-                    Submit
-                </button>
-            </form>
-        </div>
     )
 }

@@ -125,10 +125,29 @@ const FancyBox = ({ colors, item, selectedEvent }: any) => {
             return toast.success("Fancy Data Updated");
         }
     }
+    const fn_abandonedMatch = async() => {
+        const data = {
+            fancy: item,
+            result: "abandoned",
+            eventId: selectedEvent?.eventId
+        }
+        const response = await updateFancyResultApi(data);
+        if (response?.status) {
+            return toast.success("Fancy Data Updated");
+        }
+    }
     return (
         <div className="min-h-[80px] rounded-[10px] p-[20px] flex justify-between items-center py-[20px]" style={{ backgroundColor: colors.light }}>
             <p style={{ color: colors?.subText }}>{item?.nat}</p>
             <form className="flex gap-[10px]" onSubmit={fn_submit}>
+                <button
+                    type="button"
+                    style={{ backgroundColor: colors.text, color: colors?.light }}
+                    onClick={fn_abandonedMatch}
+                    className="min-w-[max-content] text-nowrap text-[15px] font-[500] h-[40px] rounded-[7px] max-w-[max-content] px-[20px] flex justify-center items-center"
+                >
+                    Abandoned
+                </button>
                 <input
                     value={resultInput}
                     onChange={(e) => setResultInput(e.target.value)}
