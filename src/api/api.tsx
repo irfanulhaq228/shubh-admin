@@ -854,6 +854,26 @@ export const updateFancyResultApi = async (data: any) => {
     }
 }
 
+export const updateFancyRollBackApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/redis/update-fancy-rollback`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
 export const getActiveSportsByAdmin = async () => {
     try {
         const token = Cookies.get('adminToken');
@@ -913,6 +933,26 @@ export const updateBookmakerResultApi = async (data: any) => {
     try {
         const token = Cookies.get('adminToken');
         const response = await axios.post(`${URL}/redis/update-bookmaker-result`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const updateBookmakerRollBackApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/redis/update-bookmaker-rollback`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

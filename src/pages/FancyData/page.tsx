@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 import useColorScheme from "../../hooks/useColorScheme";
-import { getEventsRunFancyDataApi, getFancyDataByEventIdApi, updateFancyResultApi } from "../../api/api";
+import { getEventsRunFancyDataApi, getFancyDataByEventIdApi, updateFancyResultApi, updateFancyRollBackApi } from "../../api/api";
 
 const FancyData = ({ darkTheme }: any) => {
     const [fancyData, setFancyData] = useState([]);
@@ -110,6 +110,7 @@ const Button = ({ colors, item, selectedEvent, setSelectedEvent }: any) => {
 
 const FancyBox = ({ colors, item, selectedEvent }: any) => {
     const [resultInput, setResultInput] = useState(item?.result || "");
+    const rollBack = item?.rollBack === true ? true : item?.rollBack === false ? false : null;
     useEffect(() => {
         setResultInput(item?.result || "");
     }, [item, selectedEvent]);
@@ -122,10 +123,11 @@ const FancyBox = ({ colors, item, selectedEvent }: any) => {
         }
         const response = await updateFancyResultApi(data);
         if (response?.status) {
+            setResultInput(resultInput);
             return toast.success("Fancy Data Updated");
         }
     }
-    const fn_abandonedMatch = async() => {
+    const fn_abandonedMatch = async () => {
         const data = {
             fancy: item,
             result: "abandoned",
@@ -136,10 +138,41 @@ const FancyBox = ({ colors, item, selectedEvent }: any) => {
             return toast.success("Fancy Data Updated");
         }
     }
+    const fn_rollBackMatch = async () => {
+        const data = {
+            fancy: item,
+            rollBack: !rollBack,
+            eventId: selectedEvent?.eventId
+        }
+        const response = await updateFancyRollBackApi(data);
+        if (response?.status) {
+            return toast.success("Fancy Data Updated");
+        }
+    }
     return (
         <div className="min-h-[80px] rounded-[10px] p-[20px] flex justify-between items-center py-[20px]" style={{ backgroundColor: colors.light }}>
             <p style={{ color: colors?.subText }}>{item?.nat}</p>
             <form className="flex gap-[10px]" onSubmit={fn_submit}>
+                {rollBack === false && (
+                    <button
+                        type="button"
+                        style={{ backgroundColor: colors.text, color: colors?.light }}
+                        onClick={fn_rollBackMatch}
+                        className="min-w-[max-content] text-nowrap text-[15px] font-[500] h-[40px] rounded-[7px] max-w-[max-content] px-[20px] flex justify-center items-center"
+                    >
+                        Rollback
+                    </button>
+                )}
+                {rollBack === true && (
+                    <button
+                        type="button"
+                        style={{ backgroundColor: colors.text, color: colors?.light }}
+                        onClick={fn_rollBackMatch}
+                        className="min-w-[max-content] text-nowrap text-[15px] font-[500] h-[40px] rounded-[7px] max-w-[max-content] px-[20px] flex justify-center items-center"
+                    >
+                        Unrolled
+                    </button>
+                )}
                 <button
                     type="button"
                     style={{ backgroundColor: colors.text, color: colors?.light }}
@@ -149,6 +182,7 @@ const FancyBox = ({ colors, item, selectedEvent }: any) => {
                     Abandoned
                 </button>
                 <input
+                    type="number"
                     value={resultInput}
                     onChange={(e) => setResultInput(e.target.value)}
                     placeholder="Enter Result..."
