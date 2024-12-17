@@ -11,7 +11,8 @@ const initialState = {
   smallSidebar: false,
   wallet: 0,
   loginType: "",
-  betPage: "current-bets"
+  betPage: "current-bets",
+  admin: {}
 };
 
 export const featuresSlice = createSlice({
@@ -50,7 +51,10 @@ export const featuresSlice = createSlice({
     },
     updateBetsPage: (state, action) => {
       state.betPage = action.payload;
-    }
+    },
+    updateAdmin: (state, action) => {
+      state.admin = action.payload;
+    },
   },
 });
 
@@ -65,6 +69,7 @@ export const {
   updateSmallsidebar,
   updateWallet,
   updateLoginType,
-  updateBetsPage
+  updateBetsPage,
+  updateAdmin
 } = featuresSlice.actions;
 export const featuresReducer = featuresSlice.reducer;

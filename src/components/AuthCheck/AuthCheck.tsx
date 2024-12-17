@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../Loader';
 import { checkAdminApi } from '../../api/api';
 import { useDispatch } from 'react-redux';
-import { updateWallet } from '../../features/features';
+import { updateAdmin, updateWallet } from '../../features/features';
 
 interface AuthCheckProps {
     children: ReactNode;
@@ -20,7 +20,8 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
     const fn_checkAdmin = async () => {
         const response = await checkAdminApi();
         if (response?.status) {
-            dispatch(updateWallet(response?.data?.wallet))
+            dispatch(updateWallet(response?.data?.wallet));
+            dispatch(updateAdmin(response?.data));
             if (location.pathname !== "/") {
                 if (token) {
                     setLoader(false);

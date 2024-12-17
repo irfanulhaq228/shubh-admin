@@ -13,9 +13,10 @@ import { updateColorScheme, updateDarkTheme } from "../features/features";
 const Navbar = ({ pageName, darkTheme, colors }: any) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const colorScheme = useSelector((state: any) => state.colorScheme);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [notificationPopup, setNotificationPopup] = useState(false);
+  const colorScheme = useSelector((state: any) => state.colorScheme);
+  const admin = useSelector((state: any) => state.admin);
 
   return (
     <>
@@ -109,16 +110,12 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
         <p className="text-[15px] font-[600]">Account Info</p>
         <div className="mt-[10px]">
           <div className="flex h-[22px]">
-            <p className="w-[120px] font-[500]">Name</p>
-            <p>Test</p>
+            <p className="w-[120px] font-[500]">Admin E-mail</p>
+            <p>{admin?.email}</p>
           </div>
           <div className="flex h-[22px]">
-            <p className="w-[120px] font-[500]">Username</p>
-            <p>test228</p>
-          </div>
-          <div className="flex h-[22px]">
-            <p className="w-[120px] font-[500]">Mobile</p>
-            <p>+91 203 1234434</p>
+            <p className="w-[120px] font-[500]">Website</p>
+            <a target="_blank" href={admin?.domain} className="underline text-blue-600">{admin?.domain}</a>
           </div>
         </div>
         <hr className="my-[20px]" />
@@ -127,10 +124,6 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
           <div className="flex h-[22px]">
             <p className="w-[120px] font-[500]">Currency</p>
             <p>INR</p>
-          </div>
-          <div className="flex h-[22px]">
-            <p className="w-[120px] font-[500]">Odds Format</p>
-            <p>--</p>
           </div>
           <div className="flex h-[22px]">
             <p className="w-[120px] font-[500]">Time Zone</p>
