@@ -1,7 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const URL = "http://backend.shubhexchange.com";
+//@ts-ignore
+import requestFcmToken from "../Notification";
+
+// const URL = "http://backend.shubhexchange.com";
+const URL = "http://62.72.57.126:8001";
 
 export const formatDate = (dateString: any) => {
     const optionsDate: any = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -16,6 +20,8 @@ export const formatDate = (dateString: any) => {
 
 export const adminLoginApi = async (data: { email: string; password: string, type: string }) => {
     try {
+        const fcmToken = await requestFcmToken();
+        console.log("fcmToken ", fcmToken);
         const response = await axios.post(`${URL}/admin/login`, data);
         if (response.status === 200) {
             if (data.type === "admin") {
