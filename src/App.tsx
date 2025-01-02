@@ -29,6 +29,7 @@ import BetHistory from "./pages/Bets/BetHistory/page";
 import ProfitLoss from "./pages/Bets/ProfitLoss/page";
 import FDProfitLoss from "./pages/Bets/FDProftLoss/page";
 
+
 function App() {
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const darkTheme = useSelector((state: any) => state.dashboardDarkTheme);

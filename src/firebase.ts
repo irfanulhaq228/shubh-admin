@@ -1,6 +1,7 @@
-// src/firebase.ts
-import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+// import { getMessaging, getToken, Messaging, isSupported } from "firebase/messaging";
+
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB37ek_hwB_FPUmzn_4E1VqXgTKOKAwedM",
@@ -15,14 +16,40 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// Register the service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/firebase-messaging-sw.js')
-    .then((registration) => {
-      console.log('Service Worker registration successful with scope: ', registration.scope);
-    }).catch((err) => {
-      console.log('Service Worker registration failed: ', err);
-    });
-}
-
 export { messaging, getToken, onMessage };
+
+// export { messaging, getToken, onMessage };
+
+// const app = initializeApp(firebaseConfig);
+
+// let messaging: Messaging | null = null;
+
+// if (typeof window !== "undefined") {
+//   isSupported().then((supported) => {
+//     if (supported) {
+//       messaging = getMessaging(app);
+//     }
+//   });
+// }
+
+// export const requestNotificationPermission = async () => {
+//   try {
+//     const status = await Notification.requestPermission();
+//     if (status === 'granted') {
+//       console.log('Notification permission granted.');
+//     } else {
+//       console.log('Notification permission denied.');
+//     }
+//   } catch (error) {
+//     console.error('Error requesting notification permission:', error);
+//   }
+// };
+
+// export const setupOnMessageListener = () => {
+//   onMessage(messaging, (payload) => {
+//     console.log('Message received. ', payload);
+//     // Customize notification handling here if needed
+//   });
+// };
+
+// export { messaging, getToken };

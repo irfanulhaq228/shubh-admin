@@ -1,11 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-//@ts-ignore
-import requestFcmToken from "../Notification";
+import { messaging, getToken } from "../firebase";
 
-// const URL = "http://backend.shubhexchange.com";
-const URL = "http://62.72.57.126:8001";
+const URL = "https://backend.shubhexchange.com";
+// const URL = "http://62.72.57.126:8001";
 
 export const formatDate = (dateString: any) => {
     const optionsDate: any = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -20,9 +19,7 @@ export const formatDate = (dateString: any) => {
 
 export const adminLoginApi = async (data: { email: string; password: string, type: string }) => {
     try {
-        const fcmToken = await requestFcmToken();
-        console.log("fcmToken ", fcmToken);
-        const response = await axios.post(`${URL}/admin/login`, data);
+        const response = await axios.post(`${URL}/admin/login`, { ...data });
         if (response.status === 200) {
             if (data.type === "admin") {
                 return { status: true, message: "OTP sent to your Email", id: response.data.id }
@@ -42,7 +39,9 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
 
 export const adminOTPApi = async (data: { id: string; otp: string }) => {
     try {
-        const response = await axios.post(`${URL}/admin/otp`, data);
+        const fcmToken = await getToken(messaging, { vapidKey: "BDejpOAWOM3yEwFQ9LbqQTpbG8SvOnaMGmNq6nwYISbSD7lhh99aKePX9HVRKg-aREsls8nNRpeHMyETF3cryyQ" });
+        Cookies.set('adminFcmToken', fcmToken);
+        const response = await axios.post(`${URL}/admin/otp`, { ...data, fcmToken });
         if (response.status === 200) {
             Cookies.set('adminToken', response?.data?.token)
             return { status: true, message: "Email Verified" }
