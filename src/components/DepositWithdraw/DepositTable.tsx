@@ -57,6 +57,7 @@ const DepositTable = ({ colors }: any) => {
                         >
                             <td className="ps-[5px]">Sr No.</td>
                             <td>TRN-ID</td>
+                            <td>USERNAME</td>
                             <td>BANK NAME</td>
                             <td>DATE</td>
                             <td>AMOUNT<SortingArrows /></td>
@@ -96,6 +97,10 @@ const DepositTable = ({ colors }: any) => {
                         <div>
                             <p className="text-[17px] font-[500] text-gray-800">Transaction Id</p>
                             <p className="text-[19px] font-[600]">{selectedItem?.transactionId}</p>
+                        </div>
+                        <div>
+                            <p className="text-[17px] font-[500] text-gray-800">User Name</p>
+                            <p className="text-[19px] font-[600]">{selectedItem?.user?.username}</p>
                         </div>
                         <div>
                             <p className="text-[17px] font-[500] text-gray-800">Bank Name</p>
@@ -139,6 +144,7 @@ const TableRows = ({ colors, item, index, isModalOpen, setIsModalOpen, setSelect
         >
             <td className="ps-[5px]">{index}</td>
             <td className="ps-[5px]">{item?.transactionId}</td>
+            <td className="ps-[5px]">{item?.user?.username}</td>
             <td>{item?.bank?.bank}</td>
             <td>{formatDate(item?.createdAt)}</td>
             <td><FaIndianRupeeSign className="inline-block" />{item?.amount}</td>

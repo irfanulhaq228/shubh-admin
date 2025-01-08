@@ -133,7 +133,7 @@ const Sidebar = ({ colors, path }: any) => {
           disabled={loginType === "staff" ? true : false}
         />
         <Menus
-          title={"Deposit/Withdraw"}
+          title={"Deposit/Withdraw Requests"}
           colors={colors}
           pathEquals={"deposit-withdraw"}
           path={path}
@@ -227,7 +227,7 @@ const Menus = ({
       className={`account-sidebar-menu`}
       style={{
         color: colors.text,
-        backgroundColor: path === pathEquals && colors.dark,
+        backgroundColor: path === pathEquals && colors.dark
       }}
     >
       {icon}
