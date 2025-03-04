@@ -39,9 +39,9 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
 
 export const adminOTPApi = async (data: { id: string; otp: string }) => {
     try {
-        const fcmToken = await getToken(messaging, { vapidKey: "BDejpOAWOM3yEwFQ9LbqQTpbG8SvOnaMGmNq6nwYISbSD7lhh99aKePX9HVRKg-aREsls8nNRpeHMyETF3cryyQ" });
-        Cookies.set('adminFcmToken', fcmToken);
-        const response = await axios.post(`${URL}/admin/otp`, { ...data, fcmToken });
+        // const fcmToken = await getToken(messaging, { vapidKey: "BDejpOAWOM3yEwFQ9LbqQTpbG8SvOnaMGmNq6nwYISbSD7lhh99aKePX9HVRKg-aREsls8nNRpeHMyETF3cryyQ" });
+        // Cookies.set('adminFcmToken', fcmToken);
+        const response = await axios.post(`${URL}/admin/otp`, { ...data, fcmToken: "" });
         if (response.status === 200) {
             Cookies.set('adminToken', response?.data?.token)
             return { status: true, message: "Email Verified" }

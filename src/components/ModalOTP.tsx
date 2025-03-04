@@ -43,7 +43,7 @@ export const ModalOTP = ({ openOTP, setOpenOTP, id }: any) => {
                     numInputs={6}
                     renderSeparator={<span className='mx-[5px]'></span>}
                     renderInput={(props) => <input {...props} />}
-                    inputStyle={{ width: "50px", height: "50px", border: "1px solid gray", fontSize: "16px", fontWeight: "600", borderRadius: "8px" }}
+                    inputStyle={{ width: "45px", height: "45px", border: "1px solid gray", fontSize: "16px", fontWeight: "600", borderRadius: "8px" }}
                 />
             </div>
             <button onClick={handleSubmit} type="submit" className="w-full h-[40px] bg-gray-100 mt-[25px] mb-[10px] border border-gray-300 rounded-full text-[14px] font-[500] flex items-center justify-center" disabled={loader}>
