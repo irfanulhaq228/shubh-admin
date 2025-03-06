@@ -40,7 +40,7 @@ const StaffManagement = ({ darkTheme }: any) => {
                 className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
                     }`}
             >
-                <Navbar pageName={"Staff Management"} darkTheme={darkTheme} colors={colors} />
+                <Navbar pageName={"Merchant Management"} darkTheme={darkTheme} colors={colors} />
                 <div className="mt-[15px] px-[10px] sm:px-[20px]">
                     <div className="flex justify-end mb-[15px]">
                         <button
@@ -49,7 +49,7 @@ const StaffManagement = ({ darkTheme }: any) => {
                             className="h-[40px] px-[20px] rounded-[7px] w-[max-content] text-nowrap font-[500] flex justify-center items-center text-[15px] gap-[7px]"
                         >
                             <span><FaPlus /></span>
-                            Add Staff
+                            Add Merchant
                         </button>
                     </div>
                     {createStaff && <StaffManagementCreateModel createStaff={createStaff} setCreateStaff={setCreateStaff} fn_getStaffs={fn_getStaffs} />}

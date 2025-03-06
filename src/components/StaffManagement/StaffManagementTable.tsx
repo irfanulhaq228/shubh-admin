@@ -16,6 +16,7 @@ const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
                         >
                             <td className="ps-[5px]">Sr No.</td>
                             <td>Email Address</td>
+                            <td>Merchant Type</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -53,6 +54,7 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
         >
             <td className="ps-[5px]">{index}</td>
             <td>{item?.email}</td>
+            <td className="capitalize">{item?.type || "Normal"} Merchant</td>
             <td><MdDelete className="text-red-500 text-[20px] cursor-pointer" onClick={fn_deleteStaff} /></td>
         </tr>
     );

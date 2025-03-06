@@ -10,6 +10,7 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FormEvent } from 'react';
 import { deleteUserByIdApi, userStatusUpdateApi } from '../../api/api';
 import { IoEye } from 'react-icons/io5';
+import { FaExclamationCircle } from 'react-icons/fa';
 
 const UsersTable = ({ colors, data, setData }: any) => {
     return (
@@ -33,7 +34,7 @@ const UsersTable = ({ colors, data, setData }: any) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.map((item: any) => (
+                        {data?.length > 0 ? data?.map((item: any) => (
                             <TableRows
                                 user={item}
                                 colors={colors}
@@ -43,7 +44,16 @@ const UsersTable = ({ colors, data, setData }: any) => {
                                 setData={setData}
                                 data={data}
                             />
-                        ))}
+                        )) : (
+                            <tr>
+                                <td colSpan={4} className="text-center py-4">
+                                    <div className="flex justify-center items-center gap-[10px]" style={{color: colors.subText}}>
+                                        <FaExclamationCircle className="text-[16px]" />
+                                        <span className="text-[14px] font-[500]">No Data Found</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

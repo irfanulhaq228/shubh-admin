@@ -60,7 +60,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/games"}
           icon={<MdCasino className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={loginType === "staff" ? true : false}
+          disabled={(loginType === "staff" || loginType === "master") ? true : false}
         />
         <Menus
           title={"Users"}
@@ -130,7 +130,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/payment-info"}
           icon={<ImCreditCard className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={loginType === "staff" ? true : false}
+          disabled={(loginType === "staff" || loginType === "master") ? true : false}
         />
         <Menus
           title={"Deposit/Withdraw Requests"}
@@ -150,7 +150,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/web-settings"}
           icon={<AiOutlineDesktop className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={loginType === "staff" ? true : false}
+          disabled={(loginType === "staff" || loginType === "master") ? true : false}
         />
         <Menus
           title={"Login History"}
@@ -163,14 +163,14 @@ const Sidebar = ({ colors, path }: any) => {
           disabled={loginType === "staff" ? true : false}
         />
         <Menus
-          title={"Staff Management"}
+          title={"Merchant Management"}
           colors={colors}
           pathEquals={"staffManagement"}
           path={path}
-          url={"/staff-management"}
+          url={"/merchant-management"}
           icon={<IoPeople className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={loginType === "staff" ? true : false}
+          disabled={(loginType === "staff" || loginType === "master") ? true : false}
         />
         <Menus
           title={"Fancy Market"}
@@ -180,7 +180,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/fancy-data"}
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={false}
+          disabled={loginType === "master" ? true : false}
         />
         <Menus
           title={"Bookmaker Market"}
@@ -190,7 +190,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/bookmaker-data"}
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={false}
+          disabled={loginType === "master" ? true : false}
         />
       </div>
     </div>

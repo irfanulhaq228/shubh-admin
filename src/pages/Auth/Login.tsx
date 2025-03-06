@@ -38,19 +38,22 @@ const Login = () => {
             return toast.error("Enter Password");
         }
         setLoader(true);
-        localStorage.setItem('loginType', loginType);
-        dispatch(updateLoginType(loginType));
+        
         const response: any = await adminLoginApi({ email, password, type: loginType });
         if (response.status) {
             if (loginType === "admin") {
+                dispatch(updateLoginType(loginType));
+                localStorage.setItem('loginType', loginType);
                 setLoader(false);
                 setId(response?.id);
                 toast.success(response?.message);
                 return setOpenOTP(true);
             } else {
+                dispatch(updateLoginType('master'));
+                localStorage.setItem('loginType', 'master');
                 setLoader(false);
                 toast.success(response?.message);
-                return navigate("/fancy-data");
+                return navigate("/dashboard");
             }
         } else {
             setLoader(false);
@@ -72,7 +75,7 @@ const Login = () => {
                         </div>
                         <div className="flex items-center gap-[5px] text-[14px] cursor-pointer">
                             <input type="radio" className="cursor-pointer" id="staffInput" name="loginType" onChange={(e) => fn_toggleLoginType(e, 'staff')} />
-                            <label htmlFor="staffInput" className="cursor-pointer">Login As Staff</label>
+                            <label htmlFor="staffInput" className="cursor-pointer">Login As Master</label>
                         </div>
                     </div>
 

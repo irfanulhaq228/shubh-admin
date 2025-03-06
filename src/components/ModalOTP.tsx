@@ -33,6 +33,7 @@ export const ModalOTP = ({ openOTP, setOpenOTP, id }: any) => {
             centered
             closeIcon={null}
             style={{ fontFamily: "Roboto" }}
+            width={450}
         >
             <p className='text-[18px] font-[500] mt-[-5px]'>Email Verification</p>
             <hr className='my-[10px]' />
@@ -46,9 +47,11 @@ export const ModalOTP = ({ openOTP, setOpenOTP, id }: any) => {
                     inputStyle={{ width: "45px", height: "45px", border: "1px solid gray", fontSize: "16px", fontWeight: "600", borderRadius: "8px" }}
                 />
             </div>
-            <button onClick={handleSubmit} type="submit" className="w-full h-[40px] bg-gray-100 mt-[25px] mb-[10px] border border-gray-300 rounded-full text-[14px] font-[500] flex items-center justify-center" disabled={loader}>
-                {!loader ? "Verify" : <Loader color="black" size={20} />}
-            </button>
+            <div className='flex justify-center'>
+                <button onClick={handleSubmit} type="submit" className="w-full max-w-[325px] h-[40px] bg-gray-100 mt-[25px] mb-[10px] border border-gray-300 rounded-full text-[14px] font-[500] flex items-center justify-center" disabled={loader}>
+                    {!loader ? "Verify" : <Loader color="black" size={20} />}
+                </button>
+            </div>
             <p className='text-center hover:underline text-[13px] font-[500] mt-[18px] cursor-pointer' onClick={() => setOpenOTP(false)}>Again Enter Email ?</p>
         </Modal>
     )

@@ -51,7 +51,7 @@ function App() {
       <Route path="/login-history" element={<LoginHistory darkTheme={darkTheme} />} />
       <Route path="/fancy-data" element={<FancyData darkTheme={darkTheme} />} />
       <Route path="/bookmaker-data" element={<BookmakerData darkTheme={darkTheme} />} />
-      <Route path="/staff-management" element={<StaffManagement darkTheme={darkTheme} />} />
+      <Route path="/merchant-management" element={<StaffManagement darkTheme={darkTheme} />} />
 
       <Route path="/bets" element={<Bets darkTheme={darkTheme} />}>
         <Route path="current-bets" index element={<CurrentBets colors={colors} />} />

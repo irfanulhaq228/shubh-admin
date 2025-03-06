@@ -24,7 +24,8 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
             if (data.type === "admin") {
                 return { status: true, message: "OTP sent to your Email", id: response.data.id }
             } else {
-                Cookies.set('adminToken', response?.data?.token)
+                Cookies.set('adminToken', response?.data?.token);
+                Cookies.set('masterToken', response?.data?.merchantToken);
                 return { status: true, message: "Staff LoggedIn Successfully" }
             }
         }
@@ -545,7 +546,12 @@ export const updateColorStatusById = async (id: string, status: boolean) => {
 
 export const checkAdminApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        let token = "" as any;
+        if (localStorage.getItem('loginType') === "master") {
+            token = Cookies.get('masterToken');
+        } else {
+            token = Cookies.get('adminToken');
+        }
         const response = await axios.get(`${URL}/admin/check`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -562,7 +568,7 @@ export const checkAdminApi = async () => {
             return { status: false, message: "Network Error" }
         }
     }
-}
+};
 
 export const deleteUserByIdApi = async (id: string) => {
     try {
@@ -977,7 +983,7 @@ export const updateBookmakerRollBackApi = async (data: any) => {
 export const createStaffApi = async (data: any) => {
     try {
         const token = Cookies.get('adminToken');
-        const response = await axios.post(`${URL}/staff`, data, {
+        const response = await axios.post(`${URL}/staff`, { ...data, type: "merchant" }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -992,7 +998,7 @@ export const createStaffApi = async (data: any) => {
             return { status: false, message: "Network Error" }
         }
     }
-}
+};
 
 export const getStaffsApi = async () => {
     try {
