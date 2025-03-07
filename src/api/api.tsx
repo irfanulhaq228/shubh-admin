@@ -1,10 +1,30 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import { messaging, getToken } from "../firebase";
+// import { messaging, getToken } from "../firebase";
 
 const URL = "https://backend.shubhexchange.com";
 // const URL = "http://62.72.57.126:8001";
+
+export const UserSignUpApi = async (data: any) => {
+    try {
+        const token = Cookies.get('masterToken');
+        const response = await axios.post(`${URL}/user`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, message: "User Created Successfully", data: response?.data?.data };
+        };
+    } catch (error: any) {
+        if (error?.status === 409) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
 
 export const formatDate = (dateString: any) => {
     const optionsDate: any = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -58,7 +78,7 @@ export const adminOTPApi = async (data: { id: string; otp: string }) => {
 
 export const getAdminDashboardDataApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken');
         const response = await axios.get(`${URL}/admin/dashboard-data`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -118,7 +138,7 @@ export const createGameApi = async (data: any) => {
 
 export const getAllUsersApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken');
         const response = await axios.get(`${URL}/user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -1042,7 +1062,7 @@ export const deleteStaffApi = async (id: string) => {
 
 export const fn_getUserInfoApi = async (id: string) => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken');
         const response = await axios.get(`${URL}/user/get-info/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`

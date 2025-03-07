@@ -1,20 +1,23 @@
 import Aos from "aos";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 import Navbar from "../../components/navbar";
+import { getAllUsersApi } from "../../api/api";
 import Sidebar from "../../components/sidebar";
 import useColorScheme from "../../hooks/useColorScheme";
 import UsersTable from "../../components/Users/UsersTable";
-import { getAllUsersApi } from "../../api/api";
-import { IoSearchOutline } from "react-icons/io5";
 import UserAddModal from "../../components/Users/UserAddModal";
 
+import { IoSearchOutline } from "react-icons/io5";
+
 const Users = ({ darkTheme }: any) => {
+
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState([]);
-  const [userAddModal, setUserAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const loginType = localStorage.getItem('loginType');
+  const [userAddModal, setUserAddModal] = useState(false);
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
   const dashboardDarkTheme = useSelector((state: any) => state.dashboardDarkTheme);
@@ -39,6 +42,12 @@ const Users = ({ darkTheme }: any) => {
   }, []);
 
   useEffect(() => {
+    if (!userAddModal) {
+      fn_getUser();
+    }
+  }, []);
+
+  useEffect(() => {
     if (searchTerm === "") {
       setData(allData);
     } else {
@@ -52,7 +61,7 @@ const Users = ({ darkTheme }: any) => {
   return (
     <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
       <Sidebar colors={colors} path={"users"} />
-      <UserAddModal open={userAddModal} setOpen={setUserAddModal} />
+      <UserAddModal open={userAddModal} setOpen={setUserAddModal} colors={colors} />
       <div
         className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
           }`}
@@ -69,14 +78,16 @@ const Users = ({ darkTheme }: any) => {
               />
               <IoSearchOutline className="absolute top-[10px] right-[10px] text-gray-500" />
             </div>
-            <button
-              type="button"
-              className={`h-[35px] rounded-[5px] w-[130px] text-[14px] font-[500] flex items-center justify-center gap-[5px] pt-[1px] transform scale-100 active:scale-95 transition-transform duration-200 will-change-transform`}
-              style={{ backgroundColor: colors.text, color: colors.bg }}
-              onClick={() => setUserAddModal(!userAddModal)}
-            >
-              <span className="text-[18px]">+</span>Add User
-            </button>
+            {loginType !== "admin" && (
+              <button
+                type="button"
+                className={`h-[35px] rounded-[5px] w-[130px] text-[14px] font-[500] flex items-center justify-center gap-[5px] pt-[1px] transform scale-100 active:scale-95 transition-transform duration-200 will-change-transform`}
+                style={{ backgroundColor: colors.text, color: colors.bg }}
+                onClick={() => setUserAddModal(!userAddModal)}
+              >
+                <span className="text-[18px]">+</span>Add User
+              </button>
+            )}
           </div>
           <UsersTable colors={colors} data={data} setData={setData} />
         </div>
