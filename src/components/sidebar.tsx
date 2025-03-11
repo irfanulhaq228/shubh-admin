@@ -52,7 +52,7 @@ const Sidebar = ({ colors, path }: any) => {
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
         />
-        <Menus
+        {/* <Menus
           title={"Games"}
           colors={colors}
           pathEquals={"games"}
@@ -61,7 +61,7 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<MdCasino className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={(loginType === "staff" || loginType === "master") ? true : false}
-        />
+        /> */}
         <Menus
           title={"Users"}
           colors={colors}
@@ -163,16 +163,16 @@ const Sidebar = ({ colors, path }: any) => {
           disabled={loginType === "staff" ? true : false}
         />
         <Menus
-          title={"Merchant Management"}
+          title={"Master Management"}
           colors={colors}
           pathEquals={"staffManagement"}
           path={path}
-          url={"/merchant-management"}
+          url={"/master-management"}
           icon={<IoPeople className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={(loginType === "staff" || loginType === "master") ? true : false}
         />
-        <Menus
+        {/* <Menus
           title={"Fancy Market"}
           colors={colors}
           pathEquals={"fancyData"}
@@ -181,8 +181,8 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "master" ? true : false}
-        />
-        <Menus
+        /> */}
+        {/* <Menus
           title={"Bookmaker Market"}
           colors={colors}
           pathEquals={"bookmakerData"}
@@ -191,7 +191,7 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<MdAutoGraph className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "master" ? true : false}
-        />
+        /> */}
       </div>
     </div>
   );

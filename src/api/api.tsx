@@ -1003,13 +1003,33 @@ export const updateBookmakerRollBackApi = async (data: any) => {
 export const createStaffApi = async (data: any) => {
     try {
         const token = Cookies.get('adminToken');
-        const response = await axios.post(`${URL}/staff`, { ...data, type: "merchant" }, {
+        const response = await axios.post(`${URL}/staff`, { ...data, type: "master" }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
         if (response?.status === 200) {
             return { status: true, data: response?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
+export const updateStaffApi = async (id: any, data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+        const response = await axios.put(`${URL}/staff/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data, message: response?.data?.message }
         }
     } catch (error: any) {
         if (error?.status === 400) {
