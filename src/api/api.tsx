@@ -8,12 +8,16 @@ const URL = "https://backend.shubhexchange.com";
 
 export const UserSignUpApi = async (data: any) => {
     try {
-        const token = Cookies.get('masterToken');
-        const response = await axios.post(`${URL}/user`, data, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            }
-        });
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const loginType = localStorage.getItem('loginType');
+
+        const response = await axios.post(`${URL}/user`,
+            { ...data, type: loginType },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
         if (response?.status === 200) {
             return { status: true, message: "User Created Successfully", data: response?.data?.data };
         };
@@ -46,7 +50,7 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
             } else {
                 Cookies.set('adminToken', response?.data?.token);
                 Cookies.set('masterToken', response?.data?.merchantToken);
-                return { status: true, message: "Staff LoggedIn Successfully" }
+                return { status: true, message: "Master LoggedIn Successfully" }
             }
         }
     } catch (error: any) {
@@ -78,7 +82,7 @@ export const adminOTPApi = async (data: { id: string; otp: string }) => {
 
 export const getAdminDashboardDataApi = async () => {
     try {
-        const token = Cookies.get('masterToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/admin/dashboard-data`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -138,7 +142,7 @@ export const createGameApi = async (data: any) => {
 
 export const getAllUsersApi = async () => {
     try {
-        const token = Cookies.get('masterToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -179,7 +183,7 @@ export const getAllLedgerApi = async () => {
 
 export const getDepositApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/deposit/admin`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -1082,7 +1086,7 @@ export const deleteStaffApi = async (id: string) => {
 
 export const fn_getUserInfoApi = async (id: string) => {
     try {
-        const token = Cookies.get('masterToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/user/get-info/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -1098,6 +1102,26 @@ export const fn_getUserInfoApi = async (id: string) => {
             return { status: false, message: "Network Error" }
         }
     }
-}
+};
+
+export const userUpdateApi = async (data: any, id: string) => {
+    try {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.put(`${URL}/user/update?userId=${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            return { status: true, message: "User Updated" }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
 
 export default URL;

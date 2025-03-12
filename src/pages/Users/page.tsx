@@ -16,7 +16,6 @@ const Users = ({ darkTheme }: any) => {
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const loginType = localStorage.getItem('loginType');
   const [userAddModal, setUserAddModal] = useState(false);
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
@@ -30,7 +29,7 @@ const Users = ({ darkTheme }: any) => {
       setData(response?.data);
       setAllData(response?.data);
     }
-  }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -61,7 +60,7 @@ const Users = ({ darkTheme }: any) => {
   return (
     <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
       <Sidebar colors={colors} path={"users"} />
-      <UserAddModal open={userAddModal} setOpen={setUserAddModal} colors={colors} />
+      <UserAddModal open={userAddModal} setOpen={setUserAddModal} colors={colors} fn_getUser={fn_getUser} />
       <div
         className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
           }`}
@@ -78,16 +77,14 @@ const Users = ({ darkTheme }: any) => {
               />
               <IoSearchOutline className="absolute top-[10px] right-[10px] text-gray-500" />
             </div>
-            {loginType !== "admin" && (
-              <button
-                type="button"
-                className={`h-[35px] rounded-[5px] w-[130px] text-[14px] font-[500] flex items-center justify-center gap-[5px] pt-[1px] transform scale-100 active:scale-95 transition-transform duration-200 will-change-transform`}
-                style={{ backgroundColor: colors.text, color: colors.bg }}
-                onClick={() => setUserAddModal(!userAddModal)}
-              >
-                <span className="text-[18px]">+</span>Add User
-              </button>
-            )}
+            <button
+              type="button"
+              className={`h-[35px] rounded-[5px] w-[130px] text-[14px] font-[500] flex items-center justify-center gap-[5px] pt-[1px] transform scale-100 active:scale-95 transition-transform duration-200 will-change-transform`}
+              style={{ backgroundColor: colors.text, color: colors.bg }}
+              onClick={() => setUserAddModal(!userAddModal)}
+            >
+              <span className="text-[18px]">+</span>Add User
+            </button>
           </div>
           <UsersTable colors={colors} data={data} setData={setData} />
         </div>

@@ -7,6 +7,7 @@ import { createStaffApi } from '../../api/api';
 import { FaIndianRupeeSign } from 'react-icons/fa6';
 
 const StaffManagementCreateModel = ({createStaff, setCreateStaff, fn_getStaffs }: any) => {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [wallet, setWallet] = useState("");
@@ -14,6 +15,9 @@ const StaffManagementCreateModel = ({createStaff, setCreateStaff, fn_getStaffs }
 
     const fn_submit = async (e: FormEvent) => {
         e.preventDefault();
+        if (name === "") {
+            return toast.error("Enter Master Name")
+        }
         if (email === "") {
             return toast.error("Enter Email Address")
         }
@@ -24,7 +28,7 @@ const StaffManagementCreateModel = ({createStaff, setCreateStaff, fn_getStaffs }
             return toast.error("Enter Wallet Amount");
         }
         const data = {
-            email, password, wallet
+            email, password, wallet, name
         }
         setLoader(true);
         const response = await createStaffApi(data);
@@ -54,6 +58,15 @@ const StaffManagementCreateModel = ({createStaff, setCreateStaff, fn_getStaffs }
             <p className='text-[22px] font-[600]'>Add New Master</p>
             <hr className='mt-[5px] mb-[10px]' />
             <form className='flex flex-col gap-[20px]' onSubmit={fn_submit}>
+                <div className='flex flex-col gap-[5px]'>
+                    <label className='font-[500] text-[15px]'>Name</label>
+                    <input
+                        value={name}
+                        placeholder='Enter Master Name'
+                        onChange={(e) => setName(e.target.value)}
+                        className='h-[40px] border rounded-[7px] px-[10px] text-[14px] font-[500] focus:outline-none focus:border-gray-300'
+                    />
+                </div>
                 <div className='flex flex-col gap-[5px]'>
                     <label className='font-[500] text-[15px]'>Email Address</label>
                     <input

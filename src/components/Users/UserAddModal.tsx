@@ -11,7 +11,7 @@ import { TiTick } from "react-icons/ti";
 import { RxCross2 } from "react-icons/rx";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
-const UserAddModal = ({ open, setOpen, colors }: any) => {
+const UserAddModal = ({ open, setOpen, colors, fn_getUser }: any) => {
 
     const [username, setUsername] = useState("");
     const [phone, setPhone] = useState("");
@@ -48,14 +48,15 @@ const UserAddModal = ({ open, setOpen, colors }: any) => {
         const phoneNumber = "+" + phone;
         const response = await UserSignUpApi({ username, phone: phoneNumber, password });
         if (response?.status) {
+            fn_getUser();
+            setPhone("");
             setOpen(false);
             setUsername("");
-            setPhone("");
             setPassword("");
-            setPasswordType("password");
             setLoader(false);
             setLengthError(true);
             setCharacterError(true);
+            setPasswordType("password");
             return toast.success(response?.message)
         } else {
             setLoader(false);

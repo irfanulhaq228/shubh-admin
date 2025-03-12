@@ -18,9 +18,9 @@ const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
                             style={{ color: colors.text, backgroundColor: colors.light }}
                         >
                             <td className="ps-[5px]">Sr No.</td>
+                            <td>Master</td>
                             <td>Email Address</td>
                             <td>Wallet</td>
-                            <td>Master Type</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -76,15 +76,16 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                 style={{ borderColor: colors.line, color: colors.subText }}
             >
                 <td className="ps-[5px]">{index}</td>
+                <td className="capitalize">{item?.type === "main" ? "Default Master" : item?.name}</td>
                 <td>{item?.email}</td>
                 <td><FaIndianRupeeSign className="inline-block mt-[-1px]" /> {item?.wallet || 0}</td>
-                <td className="capitalize">{item?.type === "main" ? "Default" : item?.type || "Normal"} Master</td>
                 <td className="flex items-center gap-[10px] pt-[6px]">
                     <MdDelete className="text-red-500 text-[20px] cursor-pointer" onClick={fn_deleteStaff} />
                     <button
                         className='text-[11px] rounded-[5px] ms-[10px] px-[10px] h-[30px] leading-[32px]'
                         style={{ backgroundColor: colors.text, color: colors.bg }}
                         onClick={() => {
+                            setPoints("");
                             setGivePointsModel(!givePointsModel);
                         }}
                     >
@@ -109,6 +110,7 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                         <p className="font-[500]">Enter Points</p>
                         <input
                             type='number'
+                            value={points}
                             onChange={(e) => setPoints(e.target.value)}
                             placeholder="Add Points"
                             className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"

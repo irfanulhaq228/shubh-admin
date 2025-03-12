@@ -29,8 +29,8 @@ const UsersTable = ({ colors, data, setData }: any) => {
                             {/* <td>Total Deposit</td> */}
                             {/* <td>Total Withdraw</td> */}
                             <td>Wallet Amount</td>
-                            {/* <td>Win Ratio</td> */}
-                            <td>Disable/Delete</td>
+                            <td>Master Name</td>
+                            <td>Action</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,7 +47,7 @@ const UsersTable = ({ colors, data, setData }: any) => {
                         )) : (
                             <tr>
                                 <td colSpan={4} className="text-center py-4">
-                                    <div className="flex justify-center items-center gap-[10px]" style={{color: colors.subText}}>
+                                    <div className="flex justify-center items-center gap-[10px]" style={{ color: colors.subText }}>
                                         <FaExclamationCircle className="text-[16px]" />
                                         <span className="text-[14px] font-[500]">No Data Found</span>
                                     </div>
@@ -97,8 +97,8 @@ const TableRows = ({ user, colors, win, image, link, setData, data }: any) => {
             <td>{user?.phone}</td>
             {/* <td>5</td> */}
             {/* <td><FaIndianRupeeSign className='inline-block me-[4px]' />105000</td> */}
-            {/* <td><FaIndianRupeeSign className='inline-block me-[4px]' />30000</td> */}
             <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
+            <td>{user?.master?.type === "main" ? "Default Master" : user?.master?.name || "Master"}</td>
             {/* <td>
                 <p className='text-white text-[13px] font-[500]'>
                     {!win ? (
