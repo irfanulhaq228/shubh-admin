@@ -38,7 +38,7 @@ const AccountStatement = ({ darkTheme }: any) => {
       <Sidebar colors={colors} path={"accountStatement"} />
       <div
         className={`relative p-[1px] transition-all duration-500 ${
-          smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
+          smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[260px]"
         }`}
       >
         <Navbar

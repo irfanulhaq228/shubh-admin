@@ -219,7 +219,7 @@ export const updateDepositApi = async (id: string, value: string) => {
 
 export const getWithdrawApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/withdraw/admin`, {
             headers: {
                 Authorization: `Bearer ${token}`,

@@ -50,7 +50,7 @@ const UserById = ({ darkTheme }: any) => {
             if (points === "" || points === "0") {
                 return toast.error("Enter Points");
             }
-            const response = await userUpdateApi({ wallet: parseFloat(user?.wallet) + parseFloat(points) }, params.id);
+            const response = await userUpdateApi({ wallet: parseFloat(points) }, params.id);
             if (response?.status) {
                 setGivePointsModel(false);
                 setPoints("");
@@ -82,7 +82,7 @@ const UserById = ({ darkTheme }: any) => {
             <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
                 <Sidebar colors={colors} path={"users"} />
                 <div
-                    className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
+                    className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[260px]"
                         }`}
                 >
                     <Navbar pageName={"User Information"} darkTheme={darkTheme} colors={colors} />

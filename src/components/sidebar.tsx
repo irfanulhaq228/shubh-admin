@@ -23,7 +23,7 @@ const Sidebar = ({ colors, path }: any) => {
   const loginType = useSelector((state: any) => state.loginType) || localStorage.getItem('loginType');
   return (
     <div
-      className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${smallSidebar ? "w-[50px]" : "w-[250px]"
+      className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${smallSidebar ? "w-[50px]" : "w-[260px]"
         }`}
       style={{ backgroundColor: colors.light }}
     >

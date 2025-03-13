@@ -6,12 +6,17 @@ import URL, { formatDate, getDepositApi, updateDepositApi } from "../../api/api"
 import { Modal } from 'antd';
 import toast from "react-hot-toast";
 import Loader from "../Loader";
+import OTPInput from "react-otp-input";
 
 const DepositTable = ({ colors }: any) => {
+    const [otp, setOtp] = useState("");
     const [data, setData] = useState([]);
+    const [loader, setLoader] = useState(true);
+    const [correctOTP, setCorrectOTP] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any>({});
-    const [loader, setLoader] = useState(true);
+
+    const [validateModal, setValidateModal] = useState(false);
 
     useEffect(() => {
         fn_getDeposit();
@@ -21,7 +26,10 @@ const DepositTable = ({ colors }: any) => {
         const response = await getDepositApi();
         if (response?.status) {
             setLoader(false);
-            setData(response?.data?.reverse())
+            setData(response?.data?.reverse());
+            if(response?.data?.length !== 0) {
+                setCorrectOTP(response?.data?.[0]?.master?.validate)
+            }
         } else {
             setLoader(false);
             setData([]);
@@ -31,19 +39,27 @@ const DepositTable = ({ colors }: any) => {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedItem({});
-    }
+    };
 
     const fn_updateStatus = async (value: string, id: string) => {
+        if (otp !== correctOTP) {
+            return toast.error("Incorrect OTP", { style: {zIndex: 9999999999} });
+        }
         const response = await updateDepositApi(id, value);
         if (response?.status) {
             setSelectedItem({});
             setIsModalOpen(false);
             fn_getDeposit();
-            return toast.success(response?.message)
+            return toast.success(response?.message);
         } else {
-            return toast.error(response?.message)
+            return toast.error(response?.message);
         }
-    }
+    };
+
+    const handleStatusChange = (value: string, id: string) => {
+        setValidateModal(true);
+        setSelectedItem({ ...selectedItem, statusToUpdate: value, idToUpdate: id });
+    };
 
     return (
         <>
@@ -59,6 +75,7 @@ const DepositTable = ({ colors }: any) => {
                             <td>TRN-ID</td>
                             <td>USERNAME</td>
                             <td>BANK NAME</td>
+                            <td>MASTER NAME</td>
                             <td>DATE</td>
                             <td>AMOUNT<SortingArrows /></td>
                             <td>Status</td>
@@ -70,7 +87,7 @@ const DepositTable = ({ colors }: any) => {
                             <TableRows item={item} index={index + 1} colors={colors} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} setSelectedItem={setSelectedItem} />
                         )) : (
                             <tr>
-                                <td colSpan={7} className="text-center h-[40px] pt-[10px]"><Loader size={25} color={"#3d3d9e"} /></td>
+                                <td colSpan={8} className="text-center h-[40px] pt-[10px]"><Loader size={25} color={"#3d3d9e"} /></td>
                             </tr>
                         )}
                     </tbody>
@@ -91,7 +108,7 @@ const DepositTable = ({ colors }: any) => {
                 <p className="text-[25px] font-[700]">Deposited Transaction Details</p>
                 <div className="my-[20px] flex gap-[30px]">
                     <div className="max-w-[400px]">
-                        <img alt="" src={`${URL}/${selectedItem?.receipt}`} className="rounded-[20px]" />
+                        <img alt="" src={`${URL}/${selectedItem?.receipt}`} className="max-h-[550px] lg:min-w-[300px] object-contain" />
                     </div>
                     <div className="flex-1 max-w-[400px] flex flex-col gap-[20px]">
                         <div>
@@ -122,11 +139,54 @@ const DepositTable = ({ colors }: any) => {
                                 {selectedItem?.status === "decline" && <p style={{ letterSpacing: "0.1px" }} className="bg-[#ffd6d6] h-[35px] rounded-full w-[100px] text-[14px] font-[600] text-[#fd3939] flex justify-center items-center">Decline</p>}
                             </p>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-[10px] mt-[10px]">
-                            {selectedItem?.status !== "pending" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-yellow-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => fn_updateStatus("pending", selectedItem?._id)}>Pending</button>}
-                            {selectedItem?.status !== "approved" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-green-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => fn_updateStatus("approved", selectedItem?._id)}>Approved</button>}
-                            {selectedItem?.status !== "decline" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-red-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => fn_updateStatus("decline", selectedItem?._id)}>Decline</button>}
-                        </div>
+                        {selectedItem?.status === "pending" && (
+                            <div className="flex flex-col sm:flex-row gap-[10px] mt-[10px]">
+                                {selectedItem?.status !== "pending" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-yellow-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => handleStatusChange("pending", selectedItem?._id)}>Pending</button>}
+                                {selectedItem?.status !== "approved" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-green-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => handleStatusChange("approved", selectedItem?._id)}>Approved</button>}
+                                {selectedItem?.status !== "decline" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-red-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => handleStatusChange("decline", selectedItem?._id)}>Decline</button>}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </Modal>
+            {/* check validation modal */}
+            <Modal
+                title=""
+                open={validateModal}
+                onOk={() => setValidateModal(false)}
+                onCancel={() => setValidateModal(false)}
+                onClose={() => setValidateModal(false)}
+                style={{ fontFamily: "Roboto" }}
+                centered
+                width={500}
+                footer={null}
+                zIndex={9999}
+            >
+                <div>
+                    <p className="text-[20px] font-[600]">Enter OTP for Validate Yourself</p>
+                    <div className="flex flex-col items-center justify-center w-full mb-[30px] mt-[40px] gap-[20px]">
+                        <OTPInput
+                            value={otp}
+                            onChange={setOtp}
+                            numInputs={6}
+                            renderSeparator={<span className='mx-[5px]'></span>}
+                            renderInput={(props) => <input {...props} />}
+                            inputStyle={{ width: "45px", height: "45px", border: "1px solid gray", fontSize: "16px", fontWeight: "600", borderRadius: "8px" }}
+                        />
+                        <button
+                            className="h-[35px] font-[500] text-[14px] w-full rounded-[5px] max-w-[320px]"
+                            style={{ backgroundColor: colors.text, color: colors.bg }}
+                            onClick={() => {
+                                if (otp === correctOTP) {
+                                    fn_updateStatus(selectedItem.statusToUpdate, selectedItem.idToUpdate);
+                                    setValidateModal(false);
+                                } else {
+                                    toast.error("Incorrect OTP");
+                                }
+                            }}
+                        >
+                            Submit
+                        </button>
                     </div>
                 </div>
             </Modal>
@@ -146,6 +206,7 @@ const TableRows = ({ colors, item, index, isModalOpen, setIsModalOpen, setSelect
             <td className="ps-[5px]">{item?.transactionId}</td>
             <td className="ps-[5px]">{item?.user?.username}</td>
             <td>{item?.bank?.bank}</td>
+            <td>{item?.master?.type === "main" ? "Default Master" : item?.master?.name || "Master"}</td>
             <td>{formatDate(item?.createdAt)}</td>
             <td><FaIndianRupeeSign className="inline-block" />{item?.amount}</td>
             <td>

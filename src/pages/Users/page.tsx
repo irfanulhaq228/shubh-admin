@@ -62,7 +62,7 @@ const Users = ({ darkTheme }: any) => {
       <Sidebar colors={colors} path={"users"} />
       <UserAddModal open={userAddModal} setOpen={setUserAddModal} colors={colors} fn_getUser={fn_getUser} />
       <div
-        className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
+        className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[260px]"
           }`}
       >
         <Navbar pageName={"Users"} darkTheme={darkTheme} colors={colors} />

@@ -37,7 +37,7 @@ const LoginHistory = ({ darkTheme }: any) => {
     <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
       <Sidebar colors={colors} path={"loginHistory"} />
       <div
-        className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
+        className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[260px]"
           }`}
       >
         <Navbar pageName={"Login History"} darkTheme={darkTheme} colors={colors} />

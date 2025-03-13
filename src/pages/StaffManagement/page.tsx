@@ -37,7 +37,7 @@ const StaffManagement = ({ darkTheme }: any) => {
         <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
             <Sidebar colors={colors} path={"staffManagement"} />
             <div
-                className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[250px]"
+                className={`relative p-[1px] transition-all duration-500 ${smallSidebar ? "ps-[50px]" : "ps-[50px] lg:ps-[260px]"
                     }`}
             >
                 <Navbar pageName={"Master Management"} darkTheme={darkTheme} colors={colors} />

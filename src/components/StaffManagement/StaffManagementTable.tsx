@@ -21,6 +21,7 @@ const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
                             <td>Master</td>
                             <td>Email Address</td>
                             <td>Wallet</td>
+                            <td>OTP</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -59,14 +60,14 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
         if (points === "" || points === "0") {
             return toast.error("Enter Points");
         }
-        const response = await updateStaffApi(item._id, { wallet: item?.wallet + parseInt(points) });
+        const response = await updateStaffApi(item._id, { wallet: parseInt(points) });
         if (response?.status) {
             setGivePointsModel(false);
             setPoints("");
             fn_getStaffs();
             return toast.success(response?.message)
         } else {
-            return toast.success(response?.message)
+            return toast.error(response?.message)
         }
     };
     return (
@@ -79,6 +80,7 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                 <td className="capitalize">{item?.type === "main" ? "Default Master" : item?.name}</td>
                 <td>{item?.email}</td>
                 <td><FaIndianRupeeSign className="inline-block mt-[-1px]" /> {item?.wallet || 0}</td>
+                <td>{item?.validate}</td>
                 <td className="flex items-center gap-[10px] pt-[6px]">
                     <MdDelete className="text-red-500 text-[20px] cursor-pointer" onClick={fn_deleteStaff} />
                     <button
