@@ -275,8 +275,8 @@ export const getBetsApi = async (label: string) => {
 
 export const createBankApi = async (data: any) => {
     try {
-        const token = Cookies.get('adminToken');
-        const response = await axios.post(`${URL}/bank`, data, {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/bank`, { ...data, type: Cookies.get('masterToken') ? "master" : "admin" }, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -296,7 +296,7 @@ export const createBankApi = async (data: any) => {
 
 export const getAllBanksApi = async () => {
     try {
-        const token = Cookies.get('adminToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/bank/admin`, {
             headers: {
                 Authorization: `Bearer ${token}`,

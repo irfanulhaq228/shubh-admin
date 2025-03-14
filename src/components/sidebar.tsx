@@ -130,7 +130,7 @@ const Sidebar = ({ colors, path }: any) => {
           url={"/payment-info"}
           icon={<ImCreditCard className="text-[20px]" />}
           smallSidebar={smallSidebar}
-          disabled={(loginType === "staff" || loginType === "master") ? true : false}
+          disabled={loginType === "staff" ? true : false}
         />
         <Menus
           title={"Deposit/Withdraw Requests"}

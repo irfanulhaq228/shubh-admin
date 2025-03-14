@@ -66,6 +66,7 @@ const PaymentInformationTable = ({ colors, data, fn_getAllBanks }: any) => {
                             <td className="ps-[5px]">Account</td>
                             <td className="ps-[5px]">Account No.</td>
                             <td>Account Holder Name</td>
+                            <td>Master Name</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -178,6 +179,7 @@ const TableRows = ({ colors, bank, fn_getAllBanks, setSelectedItem, toggleModal 
             <td className="ps-[5px] capitalize">{bank?.bank}</td>
             <td>{bank?.accountNo !== "" ? bank?.accountNo : bank?.upi}</td>
             <td>{bank?.name}</td>
+            <td>{bank?.masterId?.type === "main" ? "Default Master" : bank?.masterId?.name || "Master"}</td>
             <td>
                 <Switch size="small" defaultChecked={bank?.status} title='disable' className="me-[12px]" onChange={fn_updateStatus} />
                 <FaEdit className="text-[16px] cursor-pointer inline-block" onClick={() => { setSelectedItem(bank); toggleModal() }} />

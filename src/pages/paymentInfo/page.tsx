@@ -163,12 +163,12 @@ const PaymentInfo = ({ darkTheme }: any) => {
                       className="font-[500] text-[15px]"
                       style={{ color: colors.subText }}
                     >
-                      IBN Number
+                      IFSC Number
                     </label>
                     <input
                       type="text"
                       name="ibn"
-                      placeholder="Enter IBN Number"
+                      placeholder="Enter IFSC Number"
                       value={state.ibn}
                       onChange={handleInputChange}
                       className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
