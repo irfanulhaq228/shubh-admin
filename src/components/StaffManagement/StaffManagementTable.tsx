@@ -1,10 +1,11 @@
-import { MdDelete } from "react-icons/md";
-import { deleteStaffApi, updateStaffApi } from "../../api/api";
+import { Modal, Switch } from "antd";
 import toast from "react-hot-toast";
-import { FaExclamationCircle } from "react-icons/fa";
-import { FaIndianRupeeSign } from "react-icons/fa6";
 import { FormEvent, useState } from "react";
-import { Modal } from "antd";
+
+import { updateStaffApi } from "../../api/api";
+
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import { FaExclamationCircle, FaLock, FaLockOpen } from "react-icons/fa";
 
 const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
     return (
@@ -48,13 +49,32 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
 
     const [points, setPoints] = useState("");
     const [givePointsModel, setGivePointsModel] = useState(false);
-    const fn_deleteStaff = async () => {
-        const response = await deleteStaffApi(item?._id);
+    const [verified, setVerified] = useState(item?.verified);
+    const [bets, setBets] = useState(item?.bets);
+
+    const fn_toggleVerified = async (checked: boolean) => {
+        const response = await updateStaffApi(item._id, { verified: checked });
         if (response?.status) {
-            toast.success("Staff Deleted");
+            setVerified(checked);
             fn_getStaffs();
+            toast.success("Master Updated");
+        } else {
+            toast.error("Failed to update verification status");
         }
     };
+
+    const fn_toggleBets = async () => {
+        const newBetsStatus = !bets;
+        const response = await updateStaffApi(item._id, { bets: newBetsStatus });
+        if (response?.status) {
+            setBets(newBetsStatus);
+            fn_getStaffs();
+            toast.success("Bets status updated");
+        } else {
+            toast.error("Failed to update bets status");
+        }
+    };
+
     const fn_submit = async (e: FormEvent) => {
         e.preventDefault();
         if (points === "" || points === "0") {
@@ -82,7 +102,12 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                 <td><FaIndianRupeeSign className="inline-block mt-[-1px]" /> {item?.wallet || 0}</td>
                 <td>{item?.validate}</td>
                 <td className="flex items-center gap-[10px] pt-[6px]">
-                    <MdDelete className="text-red-500 text-[20px] cursor-pointer" onClick={fn_deleteStaff} />
+                    <Switch checked={verified} onChange={fn_toggleVerified} size="small" />
+                    {bets ? (
+                        <FaLockOpen className="text-[16px] cursor-pointer" style={{ color: colors.text }} onClick={fn_toggleBets} />
+                    ) : (
+                        <FaLock className="text-[16px] cursor-pointer" style={{ color: colors.text }} onClick={fn_toggleBets} title="Bets Lock" />
+                    )}
                     <button
                         className='text-[11px] rounded-[5px] ms-[10px] px-[10px] h-[30px] leading-[32px]'
                         style={{ backgroundColor: colors.text, color: colors.bg }}

@@ -774,9 +774,9 @@ export const getBettingTimeApi = async () => {
     }
 }
 
-export const getOpenBetsByAdminApi = async (savedToken: any) => {
+export const getOpenBetsByAdminApi = async () => {
     try {
-        const token = savedToken || Cookies.get('adminToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/bet/admin/open`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -794,9 +794,9 @@ export const getOpenBetsByAdminApi = async (savedToken: any) => {
     }
 }
 
-export const getClosedBetsByAdminApi = async (savedToken: any) => {
+export const getClosedBetsByAdminApi = async () => {
     try {
-        const token = savedToken || Cookies.get('adminToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.get(`${URL}/bet/admin/close`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -1107,7 +1107,7 @@ export const fn_getUserInfoApi = async (id: string) => {
 export const userUpdateApi = async (data: any, id: string) => {
     try {
         const token = Cookies.get('masterToken') || Cookies.get('adminToken');
-        const response = await axios.put(`${URL}/user/update?userId=${id}`, data, {
+        const response = await axios.put(`${URL}/user/update?userId=${id}&type=${Cookies.get('masterToken') ? "master" : "admin"}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

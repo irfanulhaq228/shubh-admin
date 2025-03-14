@@ -15,7 +15,6 @@ const BetHistory = ({ colors }: any) => {
   const [originalData, setOriginal] = useState([]);
   const [loader, setLoader] = useState(true);
   const [selectedSide, setSelectedSide] = useState("all");
-  const token = useSelector((state: any) => state.token);
   const [startDate, setStartDate] = useState<any>(null);
   const [endDate, setEndDate] = useState<any>(null);
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -29,7 +28,7 @@ const BetHistory = ({ colors }: any) => {
   };
 
   const fn_getUserCloseBets = async () => {
-    const response = await getClosedBetsByAdminApi(token);
+    const response = await getClosedBetsByAdminApi();
     if (response?.status) {
       setData(response?.data);
       setOriginal(response?.data);

@@ -14,15 +14,16 @@ const CurrentBetTable1 = ({ colors, data }: any) => {
               className="leading-[40px] font-[600] text-[15px]"
               style={{ color: colors.text, backgroundColor: colors.light }}
             >
-              <td className="ps-[5px] w-[100px]">Sr No.<SortingArrows /></td>
-              <td className="min-w-[250px]">Market Name</td>
-              <td>Runner Name</td>
-              <td>User Name</td>
-              <td>Side</td>
-              <td>Bet Amount<SortingArrows /></td>
-              <td>Price</td>
-              <td>Created Date</td>
-              <td>IP Address</td>
+              <td className="ps-[5px] w-[70px]">Sr No.</td>
+              <td>Match Name</td>
+              <td className="min-w-[100px]">Market Name</td>
+              <td className="min-w-[70px]">User Name</td>
+              <td className="min-w-[70px]">Master Name</td>
+              <td className="min-w-[70px]">Side</td>
+              <td className="min-w-[70px]">Stake</td>
+              <td className="min-w-[70px]">Odd</td>
+              <td className="min-w-[70px]">Created Date</td>
+              <td className="min-w-[70px]">IP Address</td>
             </tr>
           </thead>
           <tbody>
@@ -39,6 +40,16 @@ const CurrentBetTable1 = ({ colors, data }: any) => {
 export default CurrentBetTable1;
 
 const TableRows = ({ colors, item, index }: any) => {
+
+  const removeNumberAtEnd = (text: string) => {
+    return text.replace(/\s\d+$/, '');
+  };
+
+  const getOddValue = (selectionName: string, odd: any) => {
+    const match = selectionName.match(/\d+$/);
+    return match ? match[0] : odd;
+  };
+
   return (
     <tr
       key={index}
@@ -46,12 +57,20 @@ const TableRows = ({ colors, item, index }: any) => {
       style={{ borderColor: colors.line, color: colors.subText }}
     >
       <td className="ps-[5px]">{index}</td>
-      <td>{item?.gameName}</td>
-      <td>{item?.runner}</td>
+      <td className="capitalize">
+        {removeNumberAtEnd(item?.gameName)} ({removeNumberAtEnd(item?.selectionName)})
+      </td>
+      <td className="capitalize">{item?.marketName}</td>
       <td className="capitalize">{item?.user?.username}</td>
+      <td className="capitalize">
+        {item?.master?.type === "main" ? "Default Master" : item?.master?.name || "Master"}
+      </td>
       <td>{item?.side}</td>
-      <td><FaIndianRupeeSign className="inline-block me-[2px]" />{item?.amount}</td>
-      <td>{item?.odd}</td>
+      <td>
+        <FaIndianRupeeSign className="inline-block me-[2px]" />
+        {item?.stake}
+      </td>
+      <td>{item?.marketName === "fancy" ? item?.selectionName.match(/\d+(?!.*\d)/)?.[0] || item?.odd : item?.odd}</td>
       <td>{formatDate(item?.createdAt)}</td>
       <td>{item?.ipAddress}</td>
     </tr>

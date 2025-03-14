@@ -8,25 +8,28 @@ import { updateBetsPage } from "../../../features/features";
 // import CurrentBetTable2 from "../../../../components/account/Bets/CurrentBets/CurrentBetTable2";
 
 const CurrentBets = ({ colors }: any) => {
+
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
-  const [originalData, setOriginal] = useState([]);
   const [loader, setLoader] = useState(true);
+  const [originalData, setOriginal] = useState([]);
   const [selectedSide, setSelectedSide] = useState("all");
-  const token = useSelector((state: any) => state.token);
   const panelSecColor = useSelector((state: any) => state.panelSecColor);
+
   const fn_getUserCurrentBets = async () => {
-    const response = await getOpenBetsByAdminApi(token);
+    const response = await getOpenBetsByAdminApi();
     if (response?.status) {
       setData(response?.data);
       setOriginal(response?.data);
     }
     setLoader(false);
-  }
+  };
+
   useEffect(() => {
     dispatch(updateBetsPage("current-bets"))
     fn_getUserCurrentBets();
   }, []);
+
   const fn_applyFilter = async (value: string) => {
     if (value === selectedSide) return;
     setSelectedSide(value);
@@ -36,7 +39,8 @@ const CurrentBets = ({ colors }: any) => {
       const updatedData = originalData?.filter((item: any) => item?.side === value);
       setData(updatedData);
     }
-  }
+  };
+
   return (
     <div className="mt-[30px]">
       {/* select options */}

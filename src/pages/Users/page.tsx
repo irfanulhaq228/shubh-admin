@@ -86,7 +86,7 @@ const Users = ({ darkTheme }: any) => {
               <span className="text-[18px]">+</span>Add User
             </button>
           </div>
-          <UsersTable colors={colors} data={data} setData={setData} />
+          <UsersTable colors={colors} data={data} setData={setData} fn_getUser={fn_getUser} />
         </div>
       </div>
     </div>
