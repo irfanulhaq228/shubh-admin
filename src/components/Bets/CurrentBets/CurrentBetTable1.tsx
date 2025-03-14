@@ -45,11 +45,6 @@ const TableRows = ({ colors, item, index }: any) => {
     return text.replace(/\s\d+$/, '');
   };
 
-  const getOddValue = (selectionName: string, odd: any) => {
-    const match = selectionName.match(/\d+$/);
-    return match ? match[0] : odd;
-  };
-
   return (
     <tr
       key={index}

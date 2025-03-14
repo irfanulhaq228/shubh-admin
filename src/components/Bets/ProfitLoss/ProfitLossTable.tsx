@@ -14,7 +14,7 @@ const ProfitLossTable = ({ colors, data }: any) => {
                             style={{ color: colors.text, backgroundColor: colors.light }}
                         >
                             <td className="ps-[5px] w-[100px]">Sr No.<SortingArrows /></td>
-                            <td className="min-w-[250px]">Market Name</td>
+                            <td className="min-w-[250px]">Match Name</td>
                             <td>Start Time</td>
                             <td>Commision<SortingArrows /></td>
                             <td>PL</td>
@@ -35,6 +35,11 @@ const ProfitLossTable = ({ colors, data }: any) => {
 export default ProfitLossTable;
 
 const TableRows = ({ colors, item, index }: any) => {
+
+    const removeNumberAtEnd = (text: string) => {
+        return text.replace(/\s\d+$/, '');
+    };
+
     return (
         <tr
             key={index}
@@ -42,7 +47,7 @@ const TableRows = ({ colors, item, index }: any) => {
             style={{ borderColor: colors.line, color: colors.subText }}
         >
             <td className="ps-[5px]">{index}</td>
-            <td>{item?.gameName}</td>
+            <td className="capitalize">{item?.gameName} ({removeNumberAtEnd(item?.selectionName)})</td>
             <td>{formatDate(item?.createdAt)}</td>
             <td>{item?.profit}</td>
             <td style={{ color: item?.status === "pending" ? "black" : item?.status === "win" ? "green" : "red" }}>{item?.status === "pending" ? "Continue" : item?.status === "win" ? `+${item?.profit}` : `-${item?.loss}`}</td>

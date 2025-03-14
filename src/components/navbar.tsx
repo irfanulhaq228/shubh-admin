@@ -110,12 +110,12 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
         <p className="text-[15px] font-[600]">Account Info</p>
         <div className="mt-[10px]">
           <div className="flex h-[22px]">
-            <p className="w-[120px] font-[500]">Admin E-mail</p>
+            <p className="w-[120px] font-[500]">E-mail</p>
             <p>{admin?.email}</p>
           </div>
           <div className="flex h-[22px]">
             <p className="w-[120px] font-[500]">Website</p>
-            <a target="_blank" href={admin?.domain} className="underline text-blue-600">{admin?.domain}</a>
+            <a target="_blank" href={admin?.domain || "https://shubhexchange.com"} className="underline text-blue-600">{admin?.domain || "https://shubhexchange.com"}</a>
           </div>
         </div>
         <hr className="my-[20px]" />

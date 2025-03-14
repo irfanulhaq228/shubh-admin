@@ -7,6 +7,7 @@ import { Modal } from 'antd';
 import toast from "react-hot-toast";
 import Loader from "../Loader";
 import OTPInput from "react-otp-input";
+import Cookies from "js-cookie";
 
 const DepositTable = ({ colors }: any) => {
     const [otp, setOtp] = useState("");
@@ -139,7 +140,7 @@ const DepositTable = ({ colors }: any) => {
                                 {selectedItem?.status === "decline" && <p style={{ letterSpacing: "0.1px" }} className="bg-[#ffd6d6] h-[35px] rounded-full w-[100px] text-[14px] font-[600] text-[#fd3939] flex justify-center items-center">Decline</p>}
                             </p>
                         </div>
-                        {selectedItem?.status === "pending" && (
+                        {selectedItem?.status === "pending" && localStorage.getItem('loginType') !== "admin" && (
                             <div className="flex flex-col sm:flex-row gap-[10px] mt-[10px]">
                                 {selectedItem?.status !== "pending" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-yellow-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => handleStatusChange("pending", selectedItem?._id)}>Pending</button>}
                                 {selectedItem?.status !== "approved" && <button disabled={selectedItem?.status === "approved" || selectedItem?.status === "decline"} className={`h-[40px] w-[120px] rounded-[10px] bg-green-400 font-[600] ${(selectedItem?.status === "approved" || selectedItem?.status === "decline") && "cursor-not-allowed"}`} onClick={() => handleStatusChange("approved", selectedItem?._id)}>Approved</button>}
