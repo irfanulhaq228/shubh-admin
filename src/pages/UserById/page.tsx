@@ -1,5 +1,5 @@
 import Aos from "aos";
-import { Modal } from "antd";
+import { Modal, Radio, Switch } from "antd";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { FormEvent, useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 import useColorScheme from "../../hooks/useColorScheme";
-import { fn_getUserInfoApi, userUpdateApi } from "../../api/api";
+import { fn_getUserInfoApi, getActiveSportsByAdmin, userUpdateApi } from "../../api/api";
 
 import { MdLockReset } from "react-icons/md";
 import { FaPlus, FaUserAlt } from "react-icons/fa";
@@ -22,17 +22,21 @@ const UserById = ({ darkTheme }: any) => {
     const params: any = useParams();
     const [points, setPoints] = useState("");
     const [user, setUser] = useState<any>({});
+    const [loader, setLoader] = useState(false);
     const [password, setPassword] = useState("");
+    const [sports, setSports] = useState<any>([]);
     const [givePointsModel, setGivePointsModel] = useState(false);
     const colorScheme = useSelector((state: any) => state.colorScheme);
     const [resetPasswordModal, setResetPasswordModal] = useState(false);
     const smallSidebar = useSelector((state: any) => state.smallSidebar);
     const dashboardDarkTheme = useSelector((state: any) => state.dashboardDarkTheme);
+    const [sportPermission, setSportPermission] = useState(user?.sportPermission || {});
 
     const colors = useColorScheme(dashboardDarkTheme, colorScheme);
 
     useEffect(() => {
         fn_getUserInfo();
+        fn_getActiveSportsByAdmin();
         Aos.init({ once: true });
     }, []);
 
@@ -41,12 +45,20 @@ const UserById = ({ darkTheme }: any) => {
         const response = await fn_getUserInfoApi(params.id);
         if (response?.status) {
             setUser(response?.data?.data);
+            setSportPermission(response?.data?.data?.sportPermission);
         }
     };
 
-    const fn_submit = async (e: FormEvent, value: any) => {
-        e.preventDefault();
+    const fn_getActiveSportsByAdmin = async () => {
+        const response = await getActiveSportsByAdmin();
+        if (response?.status) {
+            setSports(response?.data?.data);
+        }
+    };
+
+    const fn_submit = async (e: any, value: any) => {
         if (value === "points") {
+            e.preventDefault();
             if (points === "" || points === "0") {
                 return toast.error("Enter Points");
             }
@@ -59,7 +71,8 @@ const UserById = ({ darkTheme }: any) => {
             } else {
                 return toast.error(response?.message)
             }
-        } else {
+        } else if (value === "password") {
+            e.preventDefault();
             if (password === "") {
                 return toast.error("Enter Password");
             }
@@ -73,6 +86,28 @@ const UserById = ({ darkTheme }: any) => {
                 return toast.success(response?.message)
             } else {
                 return toast.error(response?.message)
+            }
+        } else {
+            const updatedPermissions = {
+                ...sports.reduce((acc: any, sport: any) => ({
+                    ...acc,
+                    [sport.name]: sportPermission?.[sport.name] !== undefined ? sportPermission[sport.name] : true
+                }), {}),
+                [value]: e
+            };
+
+            setSportPermission(updatedPermissions);
+            setLoader(true);
+            const response = await userUpdateApi({ sportPermission: updatedPermissions }, params.id);
+            if (response?.status) {
+                setLoader(false);
+                setGivePointsModel(false);
+                setPoints("");
+                fn_getUserInfo();
+                return toast.success(response?.message);
+            } else {
+                setLoader(false);
+                return toast.error(response?.message);
             }
         }
     };
@@ -156,6 +191,25 @@ const UserById = ({ darkTheme }: any) => {
                                     <FaPlus className="inline-block mr-1.5 mt-[-3px]" />Add Points
                                 </button>
                             </div>
+                            <hr className="my-[20px]" />
+                            <p className="text-[17px] font-[600] mb-[5px]" style={{ color: colors.subText }}>Games Permission</p>
+                            {sports.map((item: any, index: number) => {
+                                const isInactive = user?.sportPermission?.[item.name] === false;
+                                return (
+                                    <div className="flex items-center h-[40px]" key={index}>
+                                        <p className="text-[15px] font-[500] w-[300px] capitalize" style={{ color: colors.subText }}>
+                                            {item?.name}
+                                        </p>
+                                        <Switch
+                                            disabled={loader}
+                                            size="default"
+                                            checked={!isInactive}
+                                            title="disable"
+                                            onChange={(e) => fn_submit(e, item?.name)}
+                                        />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                     {/* <div className="mx-[10px] sm:mx-[20px] mb-[30px] bg-white">

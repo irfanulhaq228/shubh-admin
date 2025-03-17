@@ -17,7 +17,7 @@ const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
         <>
             {/* table */}
             <div className="overflow-auto min-w-full">
-                <table className="w-[950px] xl:w-full">
+                <table className="w-[1300px] xl:w-full">
                     <thead>
                         <tr
                             className="leading-[40px] font-[600] text-[15px]"
