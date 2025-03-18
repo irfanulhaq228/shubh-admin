@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 // import { messaging, getToken } from "../firebase";
 
-const URL = "https://backend.shubhexchange.com";
+export const URL = "https://backend.shubhexchange.com";
 // const URL = "http://62.72.57.126:8001";
 
 export const UserSignUpApi = async (data: any) => {
@@ -276,10 +276,10 @@ export const getBetsApi = async (label: string) => {
 export const createBankApi = async (data: any) => {
     try {
         const token = Cookies.get('masterToken') || Cookies.get('adminToken');
-        const response = await axios.post(`${URL}/bank`, { ...data, type: Cookies.get('masterToken') ? "master" : "admin" }, {
+        data.append('type', Cookies.get('masterToken') ? "master" : "admin");
+        const response = await axios.post(`${URL}/bank`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
             }
         });
         if (response.status === 200) {

@@ -7,7 +7,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 
 import Loader from '../Loader';
-import { deleteBankByIdApi, updateBankApi, updateBankDetailsApi } from "../../api/api";
+import URL, { deleteBankByIdApi, updateBankApi, updateBankDetailsApi } from "../../api/api";
 import { Banks } from '../../json-data/bank';
 
 const PaymentInformationTable = ({ colors, data, fn_getAllBanks }: any) => {
@@ -25,24 +25,29 @@ const PaymentInformationTable = ({ colors, data, fn_getAllBanks }: any) => {
 
     const fn_update = async (e: FormEvent) => {
         e.preventDefault();
-        const { bank, accountNo, ibn, name } = selectedItem;
+        const { bank, accountNo, ibn, name, image } = selectedItem;
 
         if (bank !== "UPI Payment") {
             if (accountNo === "" || bank === "" || ibn === "" || name === "") {
                 return toast.error("Fill all Fields");
             }
         } else {
-            if (accountNo === "" || bank === "" || name === "") {
-                return toast.error("Fill all Fields");
+            if (accountNo === "" || bank === "" || !image) {
+                return toast.error("Fill all Fieldss");
             }
         }
         setLoader(true);
-        const response = await updateBankDetailsApi(selectedItem?._id, {
-            bank: bank,
-            accountNo: accountNo,
-            name: name,
-            ibn: bank === "UPI Payment" ? "" : ibn,
-        });
+        const formData = new FormData();
+        formData.append('bank', bank);
+        formData.append('accountNo', accountNo);
+        if (bank !== "UPI Payment") {
+            formData.append('ibn', ibn);
+            formData.append('name', name);
+        }
+        if (image) {
+            formData.append('image', image);
+        }
+        const response = await updateBankDetailsApi(selectedItem?._id, formData);
         setLoader(false);
         if (response?.status) {
             setModal(false);
@@ -64,7 +69,7 @@ const PaymentInformationTable = ({ colors, data, fn_getAllBanks }: any) => {
                             style={{ color: colors.text, backgroundColor: colors.light }}
                         >
                             <td className="ps-[5px]">Account</td>
-                            <td className="ps-[5px]">Account No.</td>
+                            <td className="ps-[5px]">UPI/Account No.</td>
                             <td>Account Holder Name</td>
                             <td>Master Name</td>
                             <td>Action</td>
@@ -106,35 +111,54 @@ const PaymentInformationTable = ({ colors, data, fn_getAllBanks }: any) => {
                         </select>
                     </div>
                     <div className='flex flex-col'>
-                        <label className='text-[15px] font-[500] text-gray-600'>Account Number</label>
+                        <label className='text-[15px] font-[500] text-gray-600'>{selectedItem?.bank === "UPI Payment" ? "UPI ID" : "Account Number"}</label>
                         <input
-                            type='number'
-                            placeholder='Enter Account Number'
+                            placeholder={selectedItem?.bank === "UPI Payment" ? "Enter UPI ID" : "Enter Account Number"}
                             className='focus:outline-none h-[40px] rounded-[6px] px-[15px] text-[15px] font-[500] bg-white border'
                             value={selectedItem?.accountNo}
                             onChange={(e) => setSelectedItem((prev: any) => ({ ...prev, accountNo: e.target.value }))}
                         />
                     </div>
-                    <div className='flex flex-col'>
-                        <label className='text-[15px] font-[500] text-gray-600'>Account Holder Name</label>
-                        <input
-                            placeholder='Enter Account Holder Name'
-                            className='focus:outline-none h-[40px] rounded-[6px] px-[15px] text-[15px] font-[500] bg-white border'
-                            value={selectedItem?.name}
-                            onChange={(e) => setSelectedItem((prev: any) => ({ ...prev, name: e.target.value }))}
-                        />
-                    </div>
                     {selectedItem?.bank !== "UPI Payment" && (
                         <div className='flex flex-col'>
-                            <label className='text-[15px] font-[500] text-gray-600'>IBN Number</label>
+                            <label className='text-[15px] font-[500] text-gray-600'>Account Holder Name</label>
+                            <input
+                                placeholder='Enter Account Holder Name'
+                                className='focus:outline-none h-[40px] rounded-[6px] px-[15px] text-[15px] font-[500] bg-white border'
+                                value={selectedItem?.name}
+                                onChange={(e) => setSelectedItem((prev: any) => ({ ...prev, name: e.target.value }))}
+                            />
+                        </div>
+                    )}
+                    {selectedItem?.bank !== "UPI Payment" && (
+                        <div className='flex flex-col'>
+                            <label className='text-[15px] font-[500] text-gray-600'>IFSC Number</label>
                             <input
                                 type='number'
-                                placeholder='Enter IBN Number'
+                                placeholder='Enter IFSC Number'
                                 className='focus:outline-none h-[40px] rounded-[6px] px-[15px] text-[15px] font-[500] bg-white border'
                                 value={selectedItem?.ibn}
                                 onChange={(e) => setSelectedItem((prev: any) => ({ ...prev, ibn: e.target.value }))}
                             />
                         </div>
+                    )}
+                    {selectedItem?.bank === "UPI Payment" && (
+                        <>
+                            <div className='flex flex-col'>
+                                <label className='text-[15px] font-[500] text-gray-600'>Upload QR Code</label>
+                                <input
+                                    type='file'
+                                    className='focus:outline-none h-[40px] rounded-[6px] px-[15px] text-[15px] font-[500] bg-white border'
+                                    onChange={(e: any) => setSelectedItem((prev: any) => ({ ...prev, image: e.target.files[0] }))}
+                                />
+                            </div>
+                            {selectedItem?.image && (
+                                <div className='flex flex-col'>
+                                    <label className='text-[15px] font-[500] text-gray-600'>Selected UPI Image</label>
+                                    <img src={`${URL}/${selectedItem?.image}`} alt="UPI" className='h-[100px] w-[100px] object-cover' />
+                                </div>
+                            )}
+                        </>
                     )}
                     <button
                         disabled={loader}
@@ -177,12 +201,12 @@ const TableRows = ({ colors, bank, fn_getAllBanks, setSelectedItem, toggleModal 
             style={{ borderColor: colors.line, color: colors.subText }}
         >
             <td className="ps-[5px] capitalize">{bank?.bank}</td>
-            <td>{bank?.accountNo !== "" ? bank?.accountNo : bank?.upi}</td>
-            <td>{bank?.name}</td>
+            <td>{bank?.accountNo}</td>
+            <td>{bank?.name === "false" ? "-" : bank?.name}</td>
             <td>{bank?.masterId?.type === "main" ? "Default Master" : bank?.masterId?.name || "Master"}</td>
             <td>
                 <Switch size="small" defaultChecked={bank?.status} title='disable' className="me-[12px]" onChange={fn_updateStatus} />
-                <FaEdit className="text-[16px] cursor-pointer inline-block" onClick={() => { setSelectedItem(bank); toggleModal() }} />
+                <FaEdit className="text-[16px] cursor-pointer inline-block" onClick={() => { console.log(bank); setSelectedItem(bank); toggleModal() }} />
                 <MdDeleteForever className="inline-block ms-[12px] text-[19px] cursor-pointer" onClick={fn_delete} />
             </td>
         </tr>

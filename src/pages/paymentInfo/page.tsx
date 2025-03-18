@@ -15,22 +15,18 @@ import PaymentInformationTable from "../../components/PaymentInformation/Payment
 import selectBank from "../../assets/banks/select-bank.png";
 
 const PaymentInfo = ({ darkTheme }: any) => {
-  const smallSidebar = useSelector((state: any) => state.smallSidebar);
-  const dashboardDarkTheme = useSelector(
-    (state: any) => state.dashboardDarkTheme
-  );
-  const colorScheme = useSelector((state: any) => state.colorScheme);
-  const colors = useColorScheme(dashboardDarkTheme, colorScheme);
-  const [loader, setLoader] = useState(false);
-  const [data, setData] = useState([]);
 
-  const [state, setState] = useState({
-    accountNo: "",
-    name: "",
-    ibn: "",
-    bank: ""
-  });
+  const [data, setData] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [qrCode, setQrCode] = useState<File | null>(null);
+  const colorScheme = useSelector((state: any) => state.colorScheme);
+  const smallSidebar = useSelector((state: any) => state.smallSidebar);
+  const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
+  const dashboardDarkTheme = useSelector((state: any) => state.dashboardDarkTheme);
+  const [state, setState] = useState({ accountNo: "", name: "", ibn: "", bank: "" });
   const [selectedBank, setSelectedBank] = useState<null | { title: string; img: string; }>(null);
+
+  const colors = useColorScheme(dashboardDarkTheme, colorScheme);
 
   useEffect(() => {
     Aos.init({ once: true });
@@ -49,27 +45,40 @@ const PaymentInfo = ({ darkTheme }: any) => {
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (evt: any) => {
+    const file = evt.target.files[0];
+    setQrCode(file);
+    setQrCodePreview(URL.createObjectURL(file));
+  };
+
   const fn_submit = async () => {
     if (state.bank !== "UPI Payment") {
       if (state.accountNo === "" || state.bank === "" || state.ibn === "" || state.name === "") {
         return toast.error("Fill all Fields");
       }
     } else {
-      if (state.accountNo === "" || state.name === "") {
+      if (state.accountNo === "" || !qrCode) {
         return toast.error("Fill all Fields");
       }
     }
     setLoader(true);
-    const response: any = await createBankApi({
-      accountNo: state.accountNo,
-      name: state.name,
-      bank: state.bank,
-      ibn: state.bank !== "UPI Payment" ? state.ibn : ""
-    });
+    const formData = new FormData();
+    formData.append("bank", state.bank);
+    formData.append("accountNo", state.accountNo);
+    if (state.bank !== "UPI Payment") {
+      formData.append("ibn", state.ibn);
+      formData.append("name", state.name);
+    }
+    if (qrCode) {
+      formData.append("image", qrCode);
+    }
+    const response: any = await createBankApi(formData);
     if (response.status) {
       fn_getAllBanks();
       setLoader(false);
-      setState((prev) => ({ ...prev, accountNo: "", name: "", ibn: "", bank: "" }));
+      setState({ accountNo: "", name: "", ibn: "", bank: "" });
+      setQrCode(null);
+      setQrCodePreview(null);
       return toast.success(response?.message);
     } else {
       setLoader(false);
@@ -127,12 +136,11 @@ const PaymentInfo = ({ darkTheme }: any) => {
                     className="font-[500] text-[15px]"
                     style={{ color: colors.subText }}
                   >
-                    Account Number
+                    {selectedBank?.title === "UPI Payment" ? "UPI ID" : "Account Number"}
                   </label>
                   <input
-                    type="number"
                     name="accountNo"
-                    placeholder="Enter Account Number"
+                    placeholder={selectedBank?.title === "UPI Payment" ? "Enter UPI ID" : "Enter Account Number"}
                     value={state.accountNo}
                     onChange={handleInputChange}
                     className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
@@ -140,23 +148,25 @@ const PaymentInfo = ({ darkTheme }: any) => {
                     autoComplete="false"
                   />
                 </div>
-                <div className="flex flex-col gap-[3px]">
-                  <label
-                    className="font-[500] text-[15px]"
-                    style={{ color: colors.subText }}
-                  >
-                    Account Holder Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter Account Holder Name"
-                    value={state.name}
-                    onChange={handleInputChange}
-                    className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
-                    style={{ color: colors.text, backgroundColor: colors.dark }}
-                  />
-                </div>
+                {selectedBank?.title !== "UPI Payment" && (
+                  <div className="flex flex-col gap-[3px]">
+                    <label
+                      className="font-[500] text-[15px]"
+                      style={{ color: colors.subText }}
+                    >
+                      Account Holder Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter Account Holder Name"
+                      value={state.name}
+                      onChange={handleInputChange}
+                      className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
+                      style={{ color: colors.text, backgroundColor: colors.dark }}
+                    />
+                  </div>
+                )}
                 {selectedBank?.title !== "UPI Payment" && (
                   <div className="flex flex-col gap-[3px]">
                     <label
@@ -176,11 +186,32 @@ const PaymentInfo = ({ darkTheme }: any) => {
                     />
                   </div>
                 )}
+                {selectedBank?.title === "UPI Payment" && (
+                  <div className="flex flex-col gap-[3px]">
+                    <label
+                      className="font-[500] text-[15px]"
+                      style={{ color: colors.subText }}
+                    >
+                      Upload QR Code
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px] pt-[6px]"
+                      style={{ color: colors.text, backgroundColor: colors.dark }}
+                    />
+                  </div>
+                )}
               </form>
             </div>
             {/* card image */}
             <div className={`flex-1 flex flex-col items-center`}>
-              <img src={selectedBank ? selectedBank.img : selectBank} alt="bank" className="h-[270px] max-w-[350px] object-contain" />
+              {qrCodePreview ? (
+                <img src={qrCodePreview} alt="QR Code" className="h-[270px] max-w-[350px] object-contain mt-[10px]" />
+              ) : (
+                <img src={selectedBank ? selectedBank.img : selectBank} alt="bank" className="h-[270px] max-w-[350px] object-contain" />
+              )}
               <button
                 className="w-[max-content] px-[15px] sm:w-[350px] sm:mt-[10px] rounded-[7px] h-[43px] text-[15px] font-[500] flex justify-center items-center"
                 style={{ backgroundColor: colors.text, color: colors.light }}
