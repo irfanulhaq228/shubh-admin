@@ -17,23 +17,26 @@ const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
         <>
             {/* table */}
             <div className="overflow-auto min-w-full">
-                <table className="w-[1300px] xl:w-full">
+                <table className="min-w-[1450px] w-full">
                     <thead>
                         <tr
                             className="leading-[40px] font-[600] text-[15px]"
                             style={{ color: colors.text, backgroundColor: colors.light }}
                         >
-                            <td className="ps-[5px]">User Name</td>
+                            <td className="ps-[5px]">Sr. No.</td>
+                            <td>User Name</td>
                             <td>Phone</td>
-                            <td>Wallet Amount</td>
+                            <td>Balance</td>
+                            <td>Exposure</td>
                             <td>Master Name</td>
                             <td>Action</td>
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.length > 0 ? data?.map((item: any) => (
+                        {data?.length > 0 ? data?.map((item: any, index: number) => (
                             <TableRows
                                 user={item}
+                                index={index + 1}
                                 colors={colors}
                                 win={false}
                                 link={`/users/${item?._id}`}
@@ -61,7 +64,7 @@ const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
 
 export default UsersTable;
 
-const TableRows = ({ user, colors, link, setData, fn_getUser }: any) => {
+const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
 
     const navigate = useNavigate();
     const [points, setPoints] = useState("");
@@ -121,11 +124,13 @@ const TableRows = ({ user, colors, link, setData, fn_getUser }: any) => {
                 style={{ borderColor: colors.line, color: colors.subText }}
                 onClick={() => navigate(link)}
             >
-                <td className="ps-[5px] flex items-center gap-[13px] capitalize">{user.username}</td>
+                <td className="ps-[5px]">{index}</td>
+                <td className="flex items-center gap-[13px] capitalize">{user.username}</td>
                 <td>{user?.phone}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
+                <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.exposure}</td>
                 <td>{user?.master?.type === "main" ? "Default Master" : user?.master?.name || "Master"}</td>
-                <td className='max-w-[100px]'>
+                <td className='max-w-[100px] text-nowrap'>
                     <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
                     <IoEye className='inline-block ms-[10px] text-[21px] cursor-pointer' />
                     <button
