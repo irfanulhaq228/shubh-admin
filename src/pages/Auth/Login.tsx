@@ -10,14 +10,15 @@ import { ModalOTP } from "../../components/ModalOTP";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
 import { useDispatch } from "react-redux";
 import { updateLoginType } from "../../features/features";
+import UpdatePassword from "../../components/UpdatePassword";
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [passwordType, setPasswordType] = useState("password");
     const [loginType, setLoginType] = useState('admin');
+    const [passwordType, setPasswordType] = useState("password");
 
     const [id, setId] = useState("");
     const [loader, setLoader] = useState(false);

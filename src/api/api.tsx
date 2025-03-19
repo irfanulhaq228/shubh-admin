@@ -30,6 +30,29 @@ export const UserSignUpApi = async (data: any) => {
     }
 };
 
+export const updatePasswordApi = async (id: any, data: any) => {
+    try {
+        const response = await axios.put(`${URL}/admin/${id}`, data);
+        if (response?.status === 200) {
+            if (response?.data?.type === "admin") {
+                localStorage.setItem('loginType', 'admin');
+                Cookies.set('adminToken', response?.data?.token);
+            } else {
+                localStorage.setItem('loginType', response?.data?.type);
+                Cookies.set('adminToken', response?.data?.token);
+                Cookies.set('masterToken', response?.data?.masterToken);
+            }
+            return { status: true, message: response?.data?.message, data: response?.data?.data };
+        };
+    } catch (error: any) {
+        if (error?.status === 409) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
 export const formatDate = (dateString: any) => {
     const optionsDate: any = { day: '2-digit', month: 'short', year: 'numeric' };
     const optionsTime: any = { hour: '2-digit', minute: '2-digit', hour12: true };
@@ -68,8 +91,10 @@ export const adminOTPApi = async (data: { id: string; otp: string }) => {
         // Cookies.set('adminFcmToken', fcmToken);
         const response = await axios.post(`${URL}/admin/otp`, { ...data, fcmToken: "" });
         if (response.status === 200) {
-            Cookies.set('adminToken', response?.data?.token)
-            return { status: true, message: "Email Verified" }
+            if (!response?.data?.firstTime) {
+                Cookies.set('adminToken', response?.data?.token);
+            }
+            return { status: true, message: "Email Verified", firstTime: response?.data?.firstTime }
         }
     } catch (error: any) {
         if (error?.status === 400) {
