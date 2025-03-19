@@ -1,24 +1,29 @@
+import axios from 'axios';
 import { Drawer } from "antd";
 import Cookies from "js-cookie";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { FaUser } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
+import { FaCheck, FaEdit, FaUser } from "react-icons/fa";
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import { IoMoon, IoNotificationsCircle, IoSunnySharp } from "react-icons/io5";
 
+import URL from "../api/api";
 import { updateColorScheme, updateDarkTheme } from "../features/features";
 
 const Navbar = ({ pageName, darkTheme, colors }: any) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const admin = useSelector((state: any) => state.admin);
+  const [phone, setPhone] = useState(admin?.phone || '');
   const [profilePopup, setProfilePopup] = useState(false);
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [notificationPopup, setNotificationPopup] = useState(false);
   const colorScheme = useSelector((state: any) => state.colorScheme);
-  const admin = useSelector((state: any) => state.admin);
 
   const handleProfileClick = () => {
     setProfilePopup(!profilePopup);
@@ -30,6 +35,19 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
     Cookies.remove('masterToken');
     localStorage.removeItem('loginType');
     navigate("/");
+  };
+
+  const handlePhoneUpdate = async () => {
+    try {
+      const response = await axios.put(`${URL}/staff/${admin._id}`, { phone });
+      if (response.status === 200) {
+        setIsEditingPhone(false);
+        admin.phone = phone;
+        return toast.success("Phone number updated successfully");
+      }
+    } catch (error) {
+      console.error("Failed to update phone number", error);
+    }
   };
 
   return (
@@ -151,6 +169,34 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
             <p className="w-[120px] font-[500]">Time Zone</p>
             <p>GMT+0500</p>
           </div>
+          {localStorage.getItem('loginType') !== 'admin' && (
+            <div className="flex h-[22px] items-center">
+              <p className="w-[120px] font-[500]">Whatsapp No.</p>
+              {isEditingPhone ? (
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter Phone No."
+                  className="border rounded h-[28px] w-[130px] px-[10px] focus:outline-none text-[13px]"
+                />
+              ) : (
+                <p className="text-[14px]">{phone || admin?.phone || "Not Added"}</p>
+              )}
+              <button
+                onClick={() => {
+                  if (isEditingPhone) {
+                    handlePhoneUpdate();
+                  } else {
+                    setIsEditingPhone(true);
+                  }
+                }}
+                className="ml-3 text-black mt-[-1px]"
+              >
+                {isEditingPhone ? <FaCheck /> : <FaEdit />}
+              </button>
+            </div>
+          )}
         </div>
         <button
           onClick={() => {

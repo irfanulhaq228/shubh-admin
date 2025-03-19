@@ -38,7 +38,7 @@ const Login = () => {
             return toast.error("Enter Password");
         }
         setLoader(true);
-        
+
         const response: any = await adminLoginApi({ email, password, type: loginType });
         if (response.status) {
             if (loginType === "admin") {
