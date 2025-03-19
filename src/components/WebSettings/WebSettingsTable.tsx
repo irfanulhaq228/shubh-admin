@@ -131,7 +131,7 @@ const WebSettingsTable = ({ colors, data, fn_getColors }: any) => {
     return (
         <>
             {/* Betting Deplay Time */}
-            <div className='flex items-center justify-between'>
+            {/* <div className='flex items-center justify-between'>
                 <p className='text-[18px] font-[600]' style={{ color: colors.text }}>Bet Delay Time</p>
                 <button
                     className="w-[max-content] text-[15px] font-[500] rounded-[5px] px-[12px] py-[7px] lg:w-[200px]"
@@ -143,7 +143,7 @@ const WebSettingsTable = ({ colors, data, fn_getColors }: any) => {
             </div>
             <div className='mb-[15px] text-[15px]' style={{ color: colors.subText }}>
                 <p>Adjusted Delay Time: <span className='font-[700]'>{savedDelayTime} ms</span></p>
-            </div>
+            </div> */}
             {/* Website color */}
             <div className='flex items-center justify-between'>
                 <p className='text-[18px] font-[600]' style={{ color: colors.text }}>Website Color</p>

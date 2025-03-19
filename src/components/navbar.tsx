@@ -2,11 +2,12 @@ import { Drawer } from "antd";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { FaUser } from "react-icons/fa";
+import { TbLogout2 } from "react-icons/tb";
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import { IoMoon, IoNotificationsCircle, IoSunnySharp } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
 
 import { updateColorScheme, updateDarkTheme } from "../features/features";
 
@@ -14,9 +15,22 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [profilePopup, setProfilePopup] = useState(false);
   const [notificationPopup, setNotificationPopup] = useState(false);
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const admin = useSelector((state: any) => state.admin);
+
+  const handleProfileClick = () => {
+    setProfilePopup(!profilePopup);
+    setNotificationPopup(false);
+  };
+
+  const fn_logout = () => {
+    Cookies.remove('adminToken');
+    Cookies.remove('masterToken');
+    localStorage.removeItem('loginType');
+    navigate("/");
+  };
 
   return (
     <>
@@ -77,10 +91,18 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
               )}
             </div>
             <div
-              className={`w-[40px] h-[40px] rounded-full cursor-pointer flex items-center justify-center`}
+              className={`w-[40px] h-[40px] rounded-full cursor-pointer flex items-center justify-center relative`}
               style={{ backgroundColor: colors.dark }}
+              onClick={handleProfileClick}
             >
               <FaUser style={{ color: colors.text }} />
+              {profilePopup && (
+                <div className="absolute z-[99] border bg-white shadow-lg top-[40px] right-0 rounded-[7px] p-[7px] flex flex-col gap-[10px]">
+                  <button className="bg-white rounded-[7px] text-[14px] font-[500] p-[7px] w-[130px]" style={{ backgroundColor: colors.bg, color: colors.text }} onClick={fn_logout}>
+                    <TbLogout2 className="inline-block text-[16px] mt-[-2px] mr-1.5" />Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
