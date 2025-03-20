@@ -71,9 +71,13 @@ export const adminLoginApi = async (data: { email: string; password: string, typ
             if (data.type === "admin") {
                 return { status: true, message: "OTP sent to your Email", id: response.data.id }
             } else {
-                Cookies.set('adminToken', response?.data?.token);
-                Cookies.set('masterToken', response?.data?.merchantToken);
-                return { status: true, message: "Master LoggedIn Successfully" }
+                if (!response?.data?.firstTime) {
+                    Cookies.set('adminToken', response?.data?.token);
+                    Cookies.set('masterToken', response?.data?.merchantToken);
+                    return { status: true, message: "Master LoggedIn Successfully", firstTime: response?.data?.firstTime }
+                } else {
+                    return { status: true, message: "Master Verified", firstTime: response?.data?.firstTime, id: response.data.id }
+                }
             }
         }
     } catch (error: any) {

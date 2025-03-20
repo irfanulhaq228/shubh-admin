@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +9,6 @@ import { ModalOTP } from "../../components/ModalOTP";
 
 // import img from "../../assets/login-bg.jpg";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
-import { useDispatch } from "react-redux";
 import { updateLoginType } from "../../features/features";
 import UpdatePassword from "../../components/UpdatePassword";
 
@@ -19,6 +19,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [loginType, setLoginType] = useState('admin');
     const [passwordType, setPasswordType] = useState("password");
+    const [changePasswordModal, setChangePasswordModal] = useState(false);
 
     const [id, setId] = useState("");
     const [loader, setLoader] = useState(false);
@@ -50,11 +51,16 @@ const Login = () => {
                 toast.success(response?.message);
                 return setOpenOTP(true);
             } else {
-                dispatch(updateLoginType('master'));
-                localStorage.setItem('loginType', 'master');
                 setLoader(false);
                 toast.success(response?.message);
-                return navigate("/dashboard");
+                dispatch(updateLoginType('master'));
+                localStorage.setItem('loginType', 'master');
+                if (!response?.firstTime) {
+                    return navigate("/dashboard");
+                } else {
+                    setId(response?.id);
+                    setChangePasswordModal(true);
+                }
             }
         } else {
             setLoader(false);
@@ -107,6 +113,7 @@ const Login = () => {
                 </div>
             </div>
             <ModalOTP openOTP={openOTP} setOpenOTP={setOpenOTP} id={id} />
+            <UpdatePassword open={changePasswordModal} setOpen={setChangePasswordModal} id={id} navigate={navigate} />
         </>
     )
 }

@@ -18,7 +18,6 @@ const UpdatePassword = ({ id, open, navigate }: any) => {
             return toast.error(response.message || "Something went wrong");
         }
     };
-    console.log(password)
 
     return (
         <Modal
