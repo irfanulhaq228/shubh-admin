@@ -12,7 +12,6 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
     const [password, setPassword] = useState("");
     const [wallet, setWallet] = useState("");
     const [loader, setLoader] = useState(false);
-    const [validate, setValidate] = useState("");
 
     const fn_submit = async (e: FormEvent) => {
         e.preventDefault();
@@ -22,9 +21,6 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
         if (email === "") {
             return toast.error("Enter Email Address")
         }
-        if (validate === "") {
-            return toast.error("Enter OTP for Master")
-        }
         if (wallet === "") {
             return toast.error("Enter Wallet Amount");
         }
@@ -32,7 +28,7 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
             return toast.error("Enter Password");
         }
         const data = {
-            email, password, wallet, name, validate
+            email, password, wallet, name
         }
         setLoader(true);
         const response = await createStaffApi(data);
@@ -77,21 +73,6 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
                         value={email}
                         placeholder='Enter Email Address'
                         onChange={(e) => setEmail(e.target.value)}
-                        className='h-[40px] border rounded-[7px] px-[10px] text-[14px] font-[500] focus:outline-none focus:border-gray-300'
-                    />
-                </div>
-                <div className='flex flex-col gap-[5px]'>
-                    <label className='font-[500] text-[15px]'>OTP <span className='text-gray-600 text-[10px]'>(Max 6 digits Code)</span></label>
-                    <input
-                        type='number'
-                        value={validate}
-                        placeholder='Enter OTP for Master'
-                        onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            if (value.length <= 6) {
-                                setValidate(value);
-                            }
-                        }}
                         className='h-[40px] border rounded-[7px] px-[10px] text-[14px] font-[500] focus:outline-none focus:border-gray-300'
                     />
                 </div>
