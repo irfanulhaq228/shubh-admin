@@ -10,7 +10,10 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FormEvent, useState } from 'react';
 import { deleteUserByIdApi, userStatusUpdateApi, userUpdateApi } from '../../api/api';
 import { IoEye } from 'react-icons/io5';
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle, FaHandHoldingHeart } from 'react-icons/fa';
+import { PiHandCoins } from 'react-icons/pi';
+import { TbLockCog } from "react-icons/tb";
+import { Flex, Radio } from 'antd';
 
 const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
     return (
@@ -47,7 +50,7 @@ const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
                             />
                         )) : (
                             <tr>
-                                <td colSpan={4} className="text-center py-4">
+                                <td colSpan={7} className="text-center py-4">
                                     <div className="flex justify-center items-center gap-[10px]" style={{ color: colors.subText }}>
                                         <FaExclamationCircle className="text-[16px]" />
                                         <span className="text-[14px] font-[500]">No Data Found</span>
@@ -69,8 +72,15 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
     const navigate = useNavigate();
     const [points, setPoints] = useState("");
     const [password, setPassword] = useState("");
+    const [giveBonusModal, setBonusModal] = useState(false);
     const [givePointsModel, setGivePointsModel] = useState(false);
     const [resetPasswordModal, setResetPasswordModal] = useState(false);
+
+    const [value, setValue] = useState("");
+    const [bonusType, setBonusType] = useState("immediately");
+    const [bonusAmount, setBonusAmount] = useState("");
+
+    const loginType = localStorage.getItem("loginType");
 
     const handleSwitchChange = async (checked: boolean, e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
@@ -116,6 +126,21 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
         }
     };
 
+    const fn_bonus = async (e: FormEvent) => {
+        e.preventDefault();
+        const response = await userUpdateApi({ bonusAmount, bonusType, bonusValue: value }, user._id);
+        if (response?.status) {
+            setBonusModal(false);
+            setValue("");
+            setBonusType("immediately");
+            setBonusAmount("");
+            fn_getUser();
+            return toast.success(response?.message)
+        } else {
+            return toast.error(response?.message)
+        };
+    };
+
     return (
         <>
             <tr
@@ -130,11 +155,11 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.exposure}</td>
                 <td>{user?.master?.type === "main" ? "Default Master" : user?.master?.name || "Master"}</td>
-                <td className='max-w-[100px] text-nowrap'>
+                <td className='max-w-[100px] flex flex-row items-center gap-[10px]'>
                     <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
-                    <IoEye className='inline-block ms-[10px] text-[21px] cursor-pointer' />
                     <button
-                        className='text-[11px] rounded-[5px] ms-[10px] px-[10px] h-[30px] leading-[32px]'
+                        className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
+                        title='Give Points'
                         style={{ backgroundColor: colors.text, color: colors.bg }}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -142,18 +167,40 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                             setGivePointsModel(!givePointsModel);
                         }}
                     >
-                        Give Points
+                        <PiHandCoins />
                     </button>
                     <button
-                        className='text-[11px] rounded-[5px] ms-[10px] px-[10px] h-[30px] leading-[32px]'
+                        className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
                         style={{ backgroundColor: colors.text, color: colors.bg }}
+                        title='Reset Password'
                         onClick={(e) => {
                             e.stopPropagation();
                             setPassword("");
                             setResetPasswordModal(!resetPasswordModal);
                         }}
                     >
-                        Change Password
+                        <TbLockCog />
+                    </button>
+                    {loginType !== "admin" && (
+                        <button
+                            className='text-[18px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
+                            style={{ backgroundColor: colors.text, color: colors.bg }}
+                            title='Give Bonus'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setPassword("");
+                                setBonusModal(!giveBonusModal);
+                            }}
+                        >
+                            <FaHandHoldingHeart />
+                        </button>
+                    )}
+                    <button
+                        className='text-[18px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
+                        style={{ backgroundColor: colors.text, color: colors.bg }}
+                        title="View Details"
+                    >
+                        <IoEye />
                     </button>
                 </td>
             </tr>
@@ -205,6 +252,52 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                             className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"
                         />
                     </div>
+                    <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
+                        Submit
+                    </button>
+                </form>
+            </Modal>
+            {/* give bonus */}
+            <Modal
+                title=""
+                open={giveBonusModal}
+                onOk={() => setBonusModal(!giveBonusModal)}
+                onCancel={() => setBonusModal(!giveBonusModal)}
+                centered
+                footer={null}
+                style={{ fontFamily: "Roboto" }}
+                width={600}
+            >
+                <p className="text-[22px] font-[700]">Give Bonus</p>
+                <form className="pb-[15px] pt-[20px] flex flex-col gap-[10px]" onSubmit={fn_bonus}>
+                    <div className="flex flex-col">
+                        <p className="font-[500]">Bonus Amount</p>
+                        <input
+                            value={bonusAmount || ""}
+                            onChange={(e) => setBonusAmount(e.target.value)}
+                            placeholder='Enter Bonus Amount'
+                            className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[14px] focus:outline-none focus:border-gray-400"
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <p className="font-[500]">Bonus Type</p>
+                        <Radio.Group defaultValue={bonusType} onChange={(e) => setBonusType(e.target.value)}>
+                            <Radio.Button className='w-[33.3%] text-center text-[12px]' value="immediately">Immediately</Radio.Button>
+                            <Radio.Button className='w-[33.3%] text-center text-[12px]' value="points">Reaching Specific Points</Radio.Button>
+                            <Radio.Button className='w-[33.3%] text-center text-[12px]' value="days">Older User</Radio.Button>
+                        </Radio.Group>
+                    </div>
+                    {bonusType !== "immediately" && (
+                        <div className="flex flex-col">
+                            <p className="font-[500]">{bonusType === "points" ? "Spended Amount" : "No. of Days"}</p>
+                            <input
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                placeholder={bonusType === "points" ? "Enter Amount, user should spend for gaining bonus" : 'Enter No. of days, User should be order then this.'}
+                                className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[14px] focus:outline-none focus:border-gray-400"
+                            />
+                        </div>
+                    )}
                     <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
                         Submit
                     </button>
