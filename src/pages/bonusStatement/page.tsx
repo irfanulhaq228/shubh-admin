@@ -89,7 +89,7 @@ const BonusStatement = ({ darkTheme }: any) => {
             <Button colors={colors} title={"Last 30 days"} />
           </div>
           <div
-            className="rounded-[22px] pb-[10px] sm:p-[10px] md:px-[15px]"
+            className="rounded-[15px] pb-[10px] sm:p-[10px] md:px-[15px]"
             style={{ backgroundColor: colors.dark }}
           >
             <BonusStatementTable colors={colors} />

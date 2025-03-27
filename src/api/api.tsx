@@ -1153,4 +1153,24 @@ export const userUpdateApi = async (data: any, id: string) => {
     }
 };
 
+export const createBonusApi = async (data: any) => {
+    try {
+        const token = Cookies.get('masterToken');
+        const response = await axios.post(`${URL}/bonus`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            return { status: true, message: "Bonus Created Successfully" }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
 export default URL;

@@ -4,16 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 import dummyUser from "../../assets/dummy_user.jpg";
 
-import { MdDeleteForever } from "react-icons/md";
 import { FaIndianRupeeSign } from 'react-icons/fa6';
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FormEvent, useState } from 'react';
-import { deleteUserByIdApi, userStatusUpdateApi, userUpdateApi } from '../../api/api';
+import { createBonusApi, userStatusUpdateApi, userUpdateApi } from '../../api/api';
 import { IoEye } from 'react-icons/io5';
 import { FaExclamationCircle, FaHandHoldingHeart } from 'react-icons/fa';
 import { PiHandCoins } from 'react-icons/pi';
 import { TbLockCog } from "react-icons/tb";
-import { Flex, Radio } from 'antd';
+import { Radio } from 'antd';
 
 const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
     return (
@@ -128,13 +126,21 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
 
     const fn_bonus = async (e: FormEvent) => {
         e.preventDefault();
-        const response = await userUpdateApi({ bonusAmount, bonusType, bonusValue: value }, user._id);
+        const data = {
+            bonusAmount,
+            bonusType,
+            bonusValue: value,
+            user: user._id,
+            status: bonusType === "immediately" ? "success" : "pending"
+        }
+        const response = await createBonusApi(data);
         if (response?.status) {
             setBonusModal(false);
             setValue("");
             setBonusType("immediately");
             setBonusAmount("");
             fn_getUser();
+            navigate("/bonus-statement");
             return toast.success(response?.message)
         } else {
             return toast.error(response?.message)

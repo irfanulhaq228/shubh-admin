@@ -16,6 +16,7 @@ import { FaUser } from "react-icons/fa";
 import { AiOutlineDesktop } from "react-icons/ai";
 import { BsBank } from "react-icons/bs";
 import { IoPeople } from "react-icons/io5";
+import { FaHandHoldingDollar } from "react-icons/fa6";
 
 const Sidebar = ({ colors, path }: any) => {
   const dispatch = useDispatch();
@@ -112,7 +113,7 @@ const Sidebar = ({ colors, path }: any) => {
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
         /> */}
-        {/* <Menus
+        <Menus
           title={"Bonus Statement"}
           colors={colors}
           pathEquals={"bonusStatement"}
@@ -121,7 +122,7 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<FaHandHoldingDollar className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
-        /> */}
+        />
         <Menus
           title={"Payment Information"}
           colors={colors}
