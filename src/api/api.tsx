@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 // import { messaging, getToken } from "../firebase";
 
-const URL = "https://backend.shubhexchange.com";
-// const URL = "https://test-backend.shubhexchange.com";
+// const URL = "https://backend.shubhexchange.com";
+const URL = "https://test-backend.shubhexchange.com";
 
 export const UserSignUpApi = async (data: any) => {
     try {
@@ -64,12 +64,13 @@ export const formatDate = (dateString: any) => {
     return `${formattedDate}, ${formattedTime}`;
 };
 
-export const adminLoginApi = async (data: { email: string; password: string, type: string }) => {
+export const adminLoginApi = async (data: { username: string; password: string, type: string }) => {
     try {
         const response = await axios.post(`${URL}/admin/login`, { ...data });
         if (response.status === 200) {
             if (data.type === "admin") {
-                return { status: true, message: "OTP sent to your Email", id: response.data.id }
+                Cookies.set('adminToken', response?.data?.token);
+                return { status: true, message: response?.data?.message }
             } else {
                 if (!response?.data?.firstTime) {
                     Cookies.set('adminToken', response?.data?.token);
@@ -1137,6 +1138,26 @@ export const userUpdateApi = async (data: any, id: string) => {
     try {
         const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.put(`${URL}/user/update?userId=${id}&type=${Cookies.get('masterToken') ? "master" : "admin"}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            return { status: true, message: "User Updated" }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
+export const withdrawUserPointsApi = async (data: any, id: string) => {
+    try {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.put(`${URL}/user/withdraw-by-admin?userId=${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

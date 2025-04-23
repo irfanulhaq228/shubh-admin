@@ -15,7 +15,7 @@ import UpdatePassword from "../../components/UpdatePassword";
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loginType, setLoginType] = useState('admin');
     const [passwordType, setPasswordType] = useState("password");
@@ -33,15 +33,15 @@ const Login = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (email === "") {
-            return toast.error("Enter Email");
+        if (username === "") {
+            return toast.error("Enter Username");
         }
         if (password === "") {
             return toast.error("Enter Password");
         }
         setLoader(true);
 
-        const response: any = await adminLoginApi({ email, password, type: loginType });
+        const response: any = await adminLoginApi({ username, password, type: loginType });
         if (response.status) {
             if (loginType === "admin") {
                 dispatch(updateLoginType(loginType));
@@ -49,7 +49,8 @@ const Login = () => {
                 setLoader(false);
                 setId(response?.id);
                 toast.success(response?.message);
-                return setOpenOTP(true);
+                return navigate("/dashboard");
+                // return setOpenOTP(true);
             } else {
                 setLoader(false);
                 toast.success(response?.message);
@@ -88,11 +89,11 @@ const Login = () => {
 
                     <form className="p-[35px] flex flex-col gap-[25px]" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
-                            <p className="text-[14px] font-[500]">Email</p>
+                            <p className="text-[14px] font-[500]">Username</p>
                             <input
                                 className="h-[35px] border-b border-gray-300 focus:border-gray-400 bg-transparent focus:outline-none text-[14px] font-[500] text-gray-700"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col relative">
@@ -116,6 +117,6 @@ const Login = () => {
             <UpdatePassword open={changePasswordModal} setOpen={setChangePasswordModal} id={id} navigate={navigate} />
         </>
     )
-}
+};
 
 export default Login

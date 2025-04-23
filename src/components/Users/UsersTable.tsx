@@ -1,17 +1,18 @@
-import { Modal, Switch } from 'antd';
+import { Radio } from 'antd';
 import toast from 'react-hot-toast';
+import { Modal, Switch } from 'antd';
+import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import dummyUser from "../../assets/dummy_user.jpg";
 
-import { FaIndianRupeeSign } from 'react-icons/fa6';
-import { FormEvent, useState } from 'react';
-import { createBonusApi, userStatusUpdateApi, userUpdateApi } from '../../api/api';
 import { IoEye } from 'react-icons/io5';
-import { FaExclamationCircle, FaHandHoldingHeart } from 'react-icons/fa';
-import { PiHandCoins } from 'react-icons/pi';
 import { TbLockCog } from "react-icons/tb";
-import { Radio } from 'antd';
+import { FaIndianRupeeSign } from 'react-icons/fa6';
+import { PiHandCoins, PiHandWithdraw } from 'react-icons/pi';
+import { FaExclamationCircle, FaHandHoldingHeart } from 'react-icons/fa';
+
+import { createBonusApi, userStatusUpdateApi, userUpdateApi, withdrawUserPointsApi } from '../../api/api';
 
 const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
     return (
@@ -71,8 +72,10 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
     const [points, setPoints] = useState("");
     const [password, setPassword] = useState("");
     const [giveBonusModal, setBonusModal] = useState(false);
+    const [withdrawPoints, setWithdrawPoints] = useState("");
     const [givePointsModel, setGivePointsModel] = useState(false);
     const [resetPasswordModal, setResetPasswordModal] = useState(false);
+    const [withdrawPointsModel, setWithdrawPointsModel] = useState(false);
 
     const [value, setValue] = useState("");
     const [bonusType, setBonusType] = useState("immediately");
@@ -124,6 +127,22 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
         }
     };
 
+    const fn_withdrawPoints = async (e: FormEvent) => {
+        e.preventDefault();
+        if (withdrawPoints === "" || withdrawPoints === "0") {
+            return toast.error("Enter Points");
+        }
+        const response = await withdrawUserPointsApi({ value: parseFloat(withdrawPoints) }, user._id);
+        if (response?.status) {
+            setWithdrawPointsModel(false);
+            setWithdrawPoints("");
+            fn_getUser();
+            return toast.success(response?.message)
+        } else {
+            return toast.error(response?.message)
+        }
+    }
+
     const fn_bonus = async (e: FormEvent) => {
         e.preventDefault();
         const data = {
@@ -164,7 +183,7 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                 <td className='max-w-[100px] flex flex-row items-center gap-[10px]'>
                     <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
                     <button
-                        className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
+                        className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center cursor-pointer'
                         title='Give Points'
                         style={{ backgroundColor: colors.text, color: colors.bg }}
                         onClick={(e) => {
@@ -174,6 +193,18 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                         }}
                     >
                         <PiHandCoins />
+                    </button>
+                    <button
+                        className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center cursor-pointer'
+                        title='Withdraw Points'
+                        style={{ backgroundColor: colors.text, color: colors.bg }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setWithdrawPoints("");
+                            setWithdrawPointsModel(!withdrawPointsModel);
+                        }}
+                    >
+                        <PiHandWithdraw />
                     </button>
                     <button
                         className='text-[20px] rounded-[5px] w-[33px] h-[33px] min-w-[33px] min-h-[33px] leading-[32px] flex justify-center items-center'
@@ -226,9 +257,38 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                     <div className="flex flex-col">
                         <p className="font-[500]">Enter Points</p>
                         <input
+                            min={1}
                             type='number'
                             value={points}
                             onChange={(e) => setPoints(e.target.value)}
+                            className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"
+                        />
+                    </div>
+                    <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
+                        Submit
+                    </button>
+                </form>
+            </Modal>
+            {/* withdraw points model */}
+            <Modal
+                title=""
+                open={withdrawPointsModel}
+                onOk={() => setWithdrawPointsModel(!withdrawPointsModel)}
+                onCancel={() => setWithdrawPointsModel(!withdrawPointsModel)}
+                centered
+                footer={null}
+                style={{ fontFamily: "Roboto" }}
+                width={600}
+            >
+                <p className="text-[22px] font-[700]">Withdraw Points to User</p>
+                <form className="pb-[15px] pt-[20px] flex flex-col gap-[10px]" onSubmit={(e) => fn_withdrawPoints(e)}>
+                    <div className="flex flex-col">
+                        <p className="font-[500]">Enter Points to Withdraw</p>
+                        <input
+                            min={1}
+                            type='number'
+                            value={withdrawPoints}
+                            onChange={(e) => setWithdrawPoints(e.target.value)}
                             className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"
                         />
                     </div>

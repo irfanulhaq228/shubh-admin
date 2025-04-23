@@ -18,6 +18,7 @@ const PaymentInfo = ({ darkTheme }: any) => {
 
   const [data, setData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [enableBanks, setEnableBanks] = useState(true);
   const [qrCode, setQrCode] = useState<File | null>(null);
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
@@ -108,123 +109,148 @@ const PaymentInfo = ({ darkTheme }: any) => {
           colors={colors}
         />
         <div className="mt-[15px] px-[10px] sm:px-[20px]">
-          <div className="flex flex-col lg:flex-row lg:gap-[20px]">
-            {/* card fields */}
-            <div className="flex-1">
-              <form className="flex flex-col gap-[20px]" autoComplete="new-password">
-                <div className="flex flex-col gap-[3px]">
-                  <label
-                    className="font-[500] text-[15px]"
-                    style={{ color: colors.subText }}
-                  >
-                    Bank Name
-                  </label>
-                  <select
-                    name="bank"
-                    onChange={handleInputChange}
-                    style={{ color: colors.text, backgroundColor: colors.dark }}
-                    className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px] font-[500]"
-                  >
-                    <option value={""} selected disabled>---Select Bank---</option>
-                    {Banks.map((item, index) => (
-                      <option key={index} value={item.title} >{item.title}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex flex-col gap-[3px]">
-                  <label
-                    className="font-[500] text-[15px]"
-                    style={{ color: colors.subText }}
-                  >
-                    {selectedBank?.title === "UPI Payment" ? "UPI ID" : "Account Number"}
-                  </label>
-                  <input
-                    name="accountNo"
-                    placeholder={selectedBank?.title === "UPI Payment" ? "Enter UPI ID" : "Enter Account Number"}
-                    value={state.accountNo}
-                    onChange={handleInputChange}
-                    className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
-                    style={{ color: colors.text, backgroundColor: colors.dark }}
-                    autoComplete="false"
-                  />
-                </div>
-                {selectedBank?.title !== "UPI Payment" && (
+          <p className="font-[500] text-[15px]" style={{ color: colors.subText }}>Enable Users to Deposit / Withdraw</p>
+          <div className="mt-[7px] flex items-center">
+            <button
+              className={`h-[35px] w-[100px] rounded-tl-[5px] rounded-bl-[5px] text-[14px] font-[500]`}
+              style={{ backgroundColor: enableBanks ? colors.text : colors.dark, color: enableBanks ? colors.bg : colors.subText }}
+              onClick={() => setEnableBanks(true)}
+            >
+              Enable
+            </button>
+            <button
+              className="h-[35px] w-[100px] rounded-tr-[5px] rounded-br-[5px] text-[14px] font-[500]"
+              style={{ backgroundColor: !enableBanks ? colors.text : colors.dark, color: !enableBanks ? colors.bg : colors.subText }}
+              onClick={() => setEnableBanks(false)}
+            >
+              Disable
+            </button>
+            <div className="ms-[10px]">
+              <Loader color={colors.normal} size={20} />
+            </div>
+          </div>
+          <hr style={{ backgroundColor: colors.line }} className="my-[30px]" />
+          {enableBanks && (
+            <div className="flex flex-col lg:flex-row lg:gap-[20px]">
+              {/* card fields */}
+              <div className="flex-1">
+                <form className="flex flex-col gap-[20px]" autoComplete="new-password">
                   <div className="flex flex-col gap-[3px]">
                     <label
                       className="font-[500] text-[15px]"
                       style={{ color: colors.subText }}
                     >
-                      Account Holder Name
+                      Bank Name
+                    </label>
+                    <select
+                      name="bank"
+                      onChange={handleInputChange}
+                      style={{ color: colors.text, backgroundColor: colors.dark }}
+                      className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px] font-[500]"
+                    >
+                      <option value={""} selected disabled>---Select Bank---</option>
+                      {Banks.map((item, index) => (
+                        <option key={index} value={item.title} >{item.title}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-[3px]">
+                    <label
+                      className="font-[500] text-[15px]"
+                      style={{ color: colors.subText }}
+                    >
+                      {selectedBank?.title === "UPI Payment" ? "UPI ID" : "Account Number"}
                     </label>
                     <input
-                      type="text"
-                      name="name"
-                      placeholder="Enter Account Holder Name"
-                      value={state.name}
+                      name="accountNo"
+                      placeholder={selectedBank?.title === "UPI Payment" ? "Enter UPI ID" : "Enter Account Number"}
+                      value={state.accountNo}
                       onChange={handleInputChange}
                       className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
                       style={{ color: colors.text, backgroundColor: colors.dark }}
+                      autoComplete="false"
                     />
                   </div>
+                  {selectedBank?.title !== "UPI Payment" && (
+                    <div className="flex flex-col gap-[3px]">
+                      <label
+                        className="font-[500] text-[15px]"
+                        style={{ color: colors.subText }}
+                      >
+                        Account Holder Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Enter Account Holder Name"
+                        value={state.name}
+                        onChange={handleInputChange}
+                        className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
+                        style={{ color: colors.text, backgroundColor: colors.dark }}
+                      />
+                    </div>
+                  )}
+                  {selectedBank?.title !== "UPI Payment" && (
+                    <div className="flex flex-col gap-[3px]">
+                      <label
+                        className="font-[500] text-[15px]"
+                        style={{ color: colors.subText }}
+                      >
+                        IFSC Number
+                      </label>
+                      <input
+                        type="text"
+                        name="ibn"
+                        placeholder="Enter IFSC Number"
+                        value={state.ibn}
+                        onChange={handleInputChange}
+                        className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
+                        style={{ color: colors.text, backgroundColor: colors.dark }}
+                      />
+                    </div>
+                  )}
+                  {selectedBank?.title === "UPI Payment" && (
+                    <div className="flex flex-col gap-[3px]">
+                      <label
+                        className="font-[500] text-[15px]"
+                        style={{ color: colors.subText }}
+                      >
+                        Upload QR Code
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px] pt-[6px]"
+                        style={{ color: colors.text, backgroundColor: colors.dark }}
+                      />
+                    </div>
+                  )}
+                </form>
+              </div>
+              {/* card image */}
+              <div className={`flex-1 flex flex-col items-center`}>
+                {qrCodePreview ? (
+                  <img src={qrCodePreview} alt="QR Code" className="h-[270px] max-w-[350px] object-contain mt-[10px]" />
+                ) : (
+                  <img src={selectedBank ? selectedBank.img : selectBank} alt="bank" className="h-[270px] max-w-[350px] object-contain" />
                 )}
-                {selectedBank?.title !== "UPI Payment" && (
-                  <div className="flex flex-col gap-[3px]">
-                    <label
-                      className="font-[500] text-[15px]"
-                      style={{ color: colors.subText }}
-                    >
-                      IFSC Number
-                    </label>
-                    <input
-                      type="text"
-                      name="ibn"
-                      placeholder="Enter IFSC Number"
-                      value={state.ibn}
-                      onChange={handleInputChange}
-                      className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px]"
-                      style={{ color: colors.text, backgroundColor: colors.dark }}
-                    />
-                  </div>
-                )}
-                {selectedBank?.title === "UPI Payment" && (
-                  <div className="flex flex-col gap-[3px]">
-                    <label
-                      className="font-[500] text-[15px]"
-                      style={{ color: colors.subText }}
-                    >
-                      Upload QR Code
-                    </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="h-[40px] px-[10px] rounded-[5px] focus:outline-none text-[15px] pt-[6px]"
-                      style={{ color: colors.text, backgroundColor: colors.dark }}
-                    />
-                  </div>
-                )}
-              </form>
+                <button
+                  className="w-[max-content] px-[15px] sm:w-[350px] sm:mt-[10px] rounded-[7px] h-[43px] text-[15px] font-[500] flex justify-center items-center"
+                  style={{ backgroundColor: colors.text, color: colors.light }}
+                  onClick={fn_submit}
+                  disabled={loader}
+                >
+                  {!loader ? "Save Account Info" : <Loader size={25} color="white" />}
+                </button>
+              </div>
             </div>
-            {/* card image */}
-            <div className={`flex-1 flex flex-col items-center`}>
-              {qrCodePreview ? (
-                <img src={qrCodePreview} alt="QR Code" className="h-[270px] max-w-[350px] object-contain mt-[10px]" />
-              ) : (
-                <img src={selectedBank ? selectedBank.img : selectBank} alt="bank" className="h-[270px] max-w-[350px] object-contain" />
-              )}
-              <button
-                className="w-[max-content] px-[15px] sm:w-[350px] sm:mt-[10px] rounded-[7px] h-[43px] text-[15px] font-[500] flex justify-center items-center"
-                style={{ backgroundColor: colors.text, color: colors.light }}
-                onClick={fn_submit}
-                disabled={loader}
-              >
-                {!loader ? "Save Account Info" : <Loader size={25} color="white" />}
-              </button>
+          )}
+          {enableBanks && (
+            <div className={`sm:mt-[20px]`}>
+              <PaymentInformationTable colors={colors} data={data} fn_getAllBanks={fn_getAllBanks} />
             </div>
-          </div>
-          <div className={`sm:mt-[20px]`}>
-            <PaymentInformationTable colors={colors} data={data} fn_getAllBanks={fn_getAllBanks} />
-          </div>
+          )}
         </div>
       </div>
     </div>

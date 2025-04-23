@@ -18,6 +18,9 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
         if (name === "") {
             return toast.error("Enter Master Name")
         }
+        if (name.includes(" ")) {
+            return toast.error("Name should not contain spaces");
+        }
         if (email === "") {
             return toast.error("Enter Email Address")
         }
@@ -59,7 +62,7 @@ const StaffManagementCreateModel = ({ createStaff, setCreateStaff, fn_getStaffs 
             <hr className='mt-[5px] mb-[10px]' />
             <form className='flex flex-col gap-[10px]' onSubmit={fn_submit}>
                 <div className='flex flex-col gap-[5px]'>
-                    <label className='font-[500] text-[15px]'>Name</label>
+                    <label className='font-[500] text-[15px]'>Username</label>
                     <input
                         value={name}
                         placeholder='Enter Master Name'
