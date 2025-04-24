@@ -9,7 +9,7 @@ import useColorScheme from "../../hooks/useColorScheme";
 import Navbar from "../../components/navbar";
 import Loader from "../../components/Loader";
 import Sidebar from "../../components/sidebar";
-import { createBankApi, getAllBanksApi } from "../../api/api";
+import { createBankApi, fn_updateMasterApi, getAllBanksApi } from "../../api/api";
 import PaymentInformationTable from "../../components/PaymentInformation/PaymentInformationTable";
 
 import selectBank from "../../assets/banks/select-bank.png";
@@ -18,7 +18,7 @@ const PaymentInfo = ({ darkTheme }: any) => {
 
   const [data, setData] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [enableBanks, setEnableBanks] = useState(true);
+  const [enableBanks, setEnableBanks] = useState(localStorage.getItem("enableBanks") === "true" ? true : false);
   const [qrCode, setQrCode] = useState<File | null>(null);
   const colorScheme = useSelector((state: any) => state.colorScheme);
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
@@ -94,7 +94,23 @@ const PaymentInfo = ({ darkTheme }: any) => {
     } else {
       setData([])
     }
-  }
+  };
+
+  const fn_updateMaster = async (value: Boolean) => {
+    if (value === enableBanks) return;
+    try {
+      setLoader(true);
+      const response = await fn_updateMasterApi({ enableBanks: value });
+      if (response?.status) {
+        localStorage.setItem("enableBanks", value.toString());
+        toast.success(response?.message);
+      }
+      setLoader(false);
+    } catch (error: any) {
+      toast.error(error.message || "Network Error");
+      setLoader(false);
+    }
+  };
 
   return (
     <div className={`min-h-[100vh]`} style={{ backgroundColor: colors.bg }}>
@@ -114,20 +130,22 @@ const PaymentInfo = ({ darkTheme }: any) => {
             <button
               className={`h-[35px] w-[100px] rounded-tl-[5px] rounded-bl-[5px] text-[14px] font-[500]`}
               style={{ backgroundColor: enableBanks ? colors.text : colors.dark, color: enableBanks ? colors.bg : colors.subText }}
-              onClick={() => setEnableBanks(true)}
+              onClick={() => { setEnableBanks(true); fn_updateMaster(true) }}
             >
               Enable
             </button>
             <button
               className="h-[35px] w-[100px] rounded-tr-[5px] rounded-br-[5px] text-[14px] font-[500]"
               style={{ backgroundColor: !enableBanks ? colors.text : colors.dark, color: !enableBanks ? colors.bg : colors.subText }}
-              onClick={() => setEnableBanks(false)}
+              onClick={() => { setEnableBanks(false); fn_updateMaster(false) }}
             >
               Disable
             </button>
-            <div className="ms-[10px]">
-              <Loader color={colors.normal} size={20} />
-            </div>
+            {loader && (
+              <div className="ms-[10px]">
+                <Loader color={colors.normal} size={20} />
+              </div>
+            )}
           </div>
           <hr style={{ backgroundColor: colors.line }} className="my-[30px]" />
           {enableBanks && (

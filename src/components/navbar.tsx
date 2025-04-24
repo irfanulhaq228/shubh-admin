@@ -203,6 +203,7 @@ const Navbar = ({ pageName, darkTheme, colors }: any) => {
             Cookies.remove('adminToken');
             Cookies.remove('masterToken');
             Cookies.remove('loginType');
+            localStorage.clear();
             navigate("/")
           }
           }

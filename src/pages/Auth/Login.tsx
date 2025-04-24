@@ -56,6 +56,7 @@ const Login = () => {
                 toast.success(response?.message);
                 dispatch(updateLoginType('master'));
                 localStorage.setItem('loginType', 'master');
+                localStorage.setItem('enableBanks', response?.enableBanks);
                 if (!response?.firstTime) {
                     return navigate("/dashboard");
                 } else {

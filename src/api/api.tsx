@@ -30,6 +30,26 @@ export const UserSignUpApi = async (data: any) => {
     }
 };
 
+export const fn_updateMasterApi = async (data: any) => {
+    try {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.post(`${URL}/staff/update`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, message: "Master Updated Successfully", data: response?.data?.data };
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
 export const updatePasswordApi = async (id: any, data: any) => {
     try {
         const response = await axios.put(`${URL}/admin/${id}`, data);
@@ -75,7 +95,7 @@ export const adminLoginApi = async (data: { username: string; password: string, 
                 if (!response?.data?.firstTime) {
                     Cookies.set('adminToken', response?.data?.token);
                     Cookies.set('masterToken', response?.data?.merchantToken);
-                    return { status: true, message: "Master LoggedIn Successfully", firstTime: response?.data?.firstTime }
+                    return { status: true, message: "Master LoggedIn Successfully", firstTime: response?.data?.firstTime, enableBanks: response?.data?.enableBanks }
                 } else {
                     return { status: true, message: "Master Verified", firstTime: response?.data?.firstTime, id: response.data.id }
                 }

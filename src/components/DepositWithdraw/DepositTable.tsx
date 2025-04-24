@@ -164,7 +164,7 @@ const DepositTable = ({ colors }: any) => {
                 zIndex={9999}
             >
                 <div>
-                    <p className="text-[20px] font-[600]">Enter OTP for Validate Yourself</p>
+                    <p className="text-[20px] font-[600]">Enter Transaction Pin to Validate Yourself</p>
                     <div className="flex flex-col items-center justify-center w-full mb-[30px] mt-[40px] gap-[20px]">
                         <OTPInput
                             value={otp}
@@ -182,7 +182,7 @@ const DepositTable = ({ colors }: any) => {
                                     fn_updateStatus(selectedItem.statusToUpdate, selectedItem.idToUpdate);
                                     setValidateModal(false);
                                 } else {
-                                    toast.error("Incorrect OTP");
+                                    toast.error("Incorrect Pin");
                                 }
                             }}
                         >
