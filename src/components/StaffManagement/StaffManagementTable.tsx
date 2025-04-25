@@ -23,6 +23,7 @@ const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
                             <td>Email Address</td>
                             <td>Wallet</td>
                             <td>OTP</td>
+                            <td>Master Type</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -90,6 +91,19 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
             return toast.error(response?.message)
         }
     };
+
+    const fn_update = async () => {
+        const response = await updateStaffApi(item._id, { type: "main" });
+        if (response?.status) {
+            setGivePointsModel(false);
+            setPoints("");
+            fn_getStaffs();
+            return toast.success(response?.message)
+        } else {
+            return toast.error(response?.message)
+        }
+    };
+
     return (
         <>
             <tr
@@ -97,10 +111,17 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                 style={{ borderColor: colors.line, color: colors.subText }}
             >
                 <td className="ps-[5px]">{index}</td>
-                <td className="capitalize">{item?.type === "main" ? "Default Master" : item?.name}</td>
+                <td className="capitalize">{item?.name}</td>
                 <td>{item?.email}</td>
                 <td><FaIndianRupeeSign className="inline-block mt-[-1px]" /> {item?.wallet || 0}</td>
                 <td>{item?.validate}</td>
+                <td>
+                    {item?.type === "main" ? (
+                        <p className="text-[11px] w-[90px] rounded-[100px] h-[28px] flex justify-center items-center cursor-not-allowed" style={{ backgroundColor: colors.dark, color: colors.text }}>Default Master</p>
+                    ) : (
+                        <p className="text-[11px] w-[90px] rounded-[100px] h-[28px] flex justify-center items-center cursor-pointer" onClick={fn_update} style={{ backgroundColor: colors.text, color: colors.bg }}>Set as Default</p>
+                    )}
+                </td>
                 <td className="flex items-center gap-[10px] pt-[6px]">
                     <Switch checked={verified} onChange={fn_toggleVerified} size="small" />
                     {bets ? (
@@ -119,9 +140,9 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                         Give Points
                     </button>
                 </td>
-            </tr>
+            </tr >
             {/* give points model */}
-            <Modal
+            < Modal
                 title=""
                 open={givePointsModel}
                 onOk={() => setGivePointsModel(!givePointsModel)}
@@ -147,7 +168,7 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                         Submit
                     </button>
                 </form>
-            </Modal>
+            </Modal >
         </>
     );
 };

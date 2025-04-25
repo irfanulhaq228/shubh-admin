@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 // import { messaging, getToken } from "../firebase";
 
-const URL = "https://backend.shubhexchange.com";
-// const URL = "https://test-backend.shubhexchange.com";
+// const URL = "https://backend.shubhexchange.com";
+const URL = "https://test-backend.shubhexchange.com";
 
 export const UserSignUpApi = async (data: any) => {
     try {

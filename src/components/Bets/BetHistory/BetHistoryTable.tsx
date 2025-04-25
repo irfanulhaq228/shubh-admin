@@ -17,13 +17,13 @@ const BetHistoryTable = ({ colors, data }: any) => {
               <td className="ps-[5px] w-[70px]">Sr No.</td>
               <td>Match Name</td>
               <td className="min-w-[100px]">Market Name</td>
-              <td className="min-w-[70px]">User Name</td>
-              <td className="min-w-[70px]">Master Name</td>
+              <td className="min-w-[100px] text-nowrap">User Name</td>
+              <td className="min-w-[100px] text-nowrap">Master Name</td>
               <td className="min-w-[70px]">Side</td>
               <td className="min-w-[70px]">Stake</td>
               <td className="min-w-[70px]">Odd</td>
               <td className="min-w-[80px]">Profit/Loss</td>
-              <td>Created Date</td>
+              <td className="min-w-[100px]">Created Date</td>
               <td>Status</td>
               <td>IP Address</td>
             </tr>
@@ -54,11 +54,11 @@ const TableRows = ({ colors, item, index }: any) => {
       style={{ borderColor: colors.line, color: colors.subText }}
     >
       <td className="ps-[5px]">{index}</td>
-      <td className="capitalize">
+      <td className="capitalize leading-[16px]">
         {removeNumberAtEnd(item?.gameName)} ({removeNumberAtEnd(item?.selectionName)})
       </td>
-      <td className="capitalize">{item?.marketName}</td>
-      <td className="capitalize">{item?.user?.username}</td>
+      <td className="capitalize leading-[16px]">{item?.marketName}</td>
+      <td className="capitalize leading-[16px]">{item?.user?.username}</td>
       <td className="capitalize">
         {item?.master?.type === "main" ? "Default Master" : item?.master?.name || "Master"}
       </td>
