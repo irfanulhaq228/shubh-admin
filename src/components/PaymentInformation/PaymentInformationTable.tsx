@@ -203,7 +203,7 @@ const TableRows = ({ colors, bank, fn_getAllBanks, setSelectedItem, toggleModal 
             <td className="ps-[5px] capitalize">{bank?.bank}</td>
             <td>{bank?.accountNo}</td>
             <td>{bank?.name === "false" ? "-" : bank?.name}</td>
-            <td>{bank?.masterId?.type === "main" ? "Default Master" : bank?.masterId?.name || "Master"}</td>
+            <td className='capitalize'>{bank?.masterId?.name}</td>
             <td>
                 <Switch size="small" defaultChecked={bank?.status} title='disable' className="me-[12px]" onChange={fn_updateStatus} />
                 <FaEdit className="text-[16px] cursor-pointer inline-block" onClick={() => { console.log(bank); setSelectedItem(bank); toggleModal() }} />

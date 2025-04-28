@@ -28,6 +28,7 @@ import CurrentBets from "./pages/Bets/CurrentBets/page";
 import BetHistory from "./pages/Bets/BetHistory/page";
 import ProfitLoss from "./pages/Bets/ProfitLoss/page";
 import FDProfitLoss from "./pages/Bets/FDProftLoss/page";
+import Reports from "./pages/Reports/Reports";
 
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
       <Route path="/fancy-data" element={<FancyData darkTheme={darkTheme} />} />
       <Route path="/bookmaker-data" element={<BookmakerData darkTheme={darkTheme} />} />
       <Route path="/master-management" element={<StaffManagement darkTheme={darkTheme} />} />
+      <Route path="/reports" element={<Reports darkTheme={darkTheme} />} />
 
       <Route path="/bets" element={<Bets darkTheme={darkTheme} />}>
         <Route path="current-bets" index element={<CurrentBets colors={colors} />} />

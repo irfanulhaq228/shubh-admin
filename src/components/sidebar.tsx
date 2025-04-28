@@ -17,6 +17,7 @@ import { AiOutlineDesktop } from "react-icons/ai";
 import { BsBank } from "react-icons/bs";
 import { IoPeople } from "react-icons/io5";
 import { FaHandHoldingDollar } from "react-icons/fa6";
+import { GiNotebook } from "react-icons/gi";
 
 const Sidebar = ({ colors, path }: any) => {
   const dispatch = useDispatch();
@@ -113,7 +114,7 @@ const Sidebar = ({ colors, path }: any) => {
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
         /> */}
-        <Menus
+        {/* <Menus
           title={"Bonus Statement"}
           colors={colors}
           pathEquals={"bonusStatement"}
@@ -122,7 +123,7 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<FaHandHoldingDollar className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
-        />
+        /> */}
         <Menus
           title={"Payment Information"}
           colors={colors}
@@ -142,6 +143,16 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<BsBank className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
+        />
+        <Menus
+          title={"Reports"}
+          colors={colors}
+          pathEquals={"reports"}
+          path={path}
+          url={"/reports"}
+          icon={<GiNotebook className="text-[20px]" />}
+          smallSidebar={smallSidebar}
+          disabled={false}
         />
         <Menus
           title={"Web Settings"}

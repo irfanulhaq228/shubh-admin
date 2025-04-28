@@ -30,6 +30,26 @@ export const UserSignUpApi = async (data: any) => {
     }
 };
 
+export const fn_getReportsApi = async (accountType: any, limit: any, currentPage: any) => {
+    try {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/admin/report?${accountType ? `accountType=${accountType}` : ''}&currentPage=${currentPage}&limit=${limit}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response?.status === 200) {
+            return { status: true, message: "Data Fetched Successfully", data: response?.data?.data, totalRecords: response?.data?.totalRecords };
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
 export const fn_updateMasterApi = async (data: any) => {
     try {
         const token = Cookies.get('masterToken') || Cookies.get('adminToken');

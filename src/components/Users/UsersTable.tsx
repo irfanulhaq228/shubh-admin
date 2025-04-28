@@ -179,7 +179,7 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                 <td>{user?.phone}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.exposure}</td>
-                <td>{user?.master?.type === "main" ? "Default Master" : user?.master?.name || "Master"}</td>
+                <td className='capitalize'>{user?.master?.name}</td>
                 <td className='max-w-[100px] flex flex-row items-center gap-[10px]'>
                     <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
                     <button
