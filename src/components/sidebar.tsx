@@ -14,7 +14,7 @@ import { ImCreditCard } from "react-icons/im";
 import { updateSmallsidebar } from "../features/features";
 import { FaUser } from "react-icons/fa";
 import { AiOutlineDesktop } from "react-icons/ai";
-import { BsBank } from "react-icons/bs";
+import { BsBank, BsFileEarmarkBarGraph } from "react-icons/bs";
 import { IoPeople } from "react-icons/io5";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { GiNotebook } from "react-icons/gi";
@@ -23,6 +23,7 @@ const Sidebar = ({ colors, path }: any) => {
   const dispatch = useDispatch();
   const smallSidebar = useSelector((state: any) => state.smallSidebar);
   const loginType = useSelector((state: any) => state.loginType) || localStorage.getItem('loginType');
+
   return (
     <div
       className={`fixed min-h-[100vh] z-[9] shadow-lg lg:shadow-none transition-all duration-500 ${smallSidebar ? "w-[50px]" : "w-[260px]"
@@ -155,6 +156,16 @@ const Sidebar = ({ colors, path }: any) => {
           disabled={false}
         />
         <Menus
+          title={"P/L Reports"}
+          colors={colors}
+          pathEquals={"profit-loss-report"}
+          path={path}
+          url={"/profit-loss-report"}
+          icon={<BsFileEarmarkBarGraph className="text-[20px]" />}
+          smallSidebar={smallSidebar}
+          disabled={(loginType === "staff" || loginType === "master") ? false : true}
+        />
+        <Menus
           title={"Web Settings"}
           colors={colors}
           pathEquals={"web"}
@@ -207,6 +218,7 @@ const Sidebar = ({ colors, path }: any) => {
       </div>
     </div>
   );
+
 };
 
 export default Sidebar;

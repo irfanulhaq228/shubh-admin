@@ -29,6 +29,7 @@ import BetHistory from "./pages/Bets/BetHistory/page";
 import ProfitLoss from "./pages/Bets/ProfitLoss/page";
 import FDProfitLoss from "./pages/Bets/FDProftLoss/page";
 import Reports from "./pages/Reports/Reports";
+import PLReports from "./pages/PL-Reports";
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
       <Route path="/bookmaker-data" element={<BookmakerData darkTheme={darkTheme} />} />
       <Route path="/master-management" element={<StaffManagement darkTheme={darkTheme} />} />
       <Route path="/reports" element={<Reports darkTheme={darkTheme} />} />
+      <Route path="/profit-loss-report" element={<PLReports darkTheme={darkTheme} />} />
 
       <Route path="/bets" element={<Bets darkTheme={darkTheme} />}>
         <Route path="current-bets" index element={<CurrentBets colors={colors} />} />

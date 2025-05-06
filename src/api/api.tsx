@@ -30,6 +30,28 @@ export const UserSignUpApi = async (data: any) => {
     }
 };
 
+export const masterReportApi = async () => {
+    try {
+        const token = Cookies.get('masterToken');
+
+        const response = await axios.get(`${URL}/bets-result/report`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data?.report };
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
 export const fn_getReportsApi = async (accountType: any, limit: any, currentPage: any) => {
     try {
         const token = Cookies.get('masterToken') || Cookies.get('adminToken');
