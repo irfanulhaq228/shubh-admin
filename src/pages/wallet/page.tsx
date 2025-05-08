@@ -25,6 +25,8 @@ const Wallet = ({ darkTheme }: any) => {
   const [depositValue, setDepositValue] = useState('');
   const [data, setData] = useState([]);
 
+  const loginType = localStorage.getItem('loginType');
+
   useEffect(() => {
     Aos.init({ once: true });
     fn_getDeposits();
@@ -64,39 +66,43 @@ const Wallet = ({ darkTheme }: any) => {
           >
             <FaIndianRupeeSign />{wallet}
           </p>
-          <div className="mt-[20px] px-[10px] sm:px-[20px]">
-            {/* boxes */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-[15px] sm:gap-[15px]">
-              <Boxes
-                colors={colors}
-                sub="Deposit Points For Approval"
-                main={admin?.pendingDeposit || 0}
-                icon={<FaIndianRupeeSign className="pt-[2px]" />}
-                panelMainColor={colors.bg}
-                panelSecColor={colors.text}
-                button={true}
-                setOpen={setDepositOpen}
-                buttonText={"Request for Deposit Points"}
-              />
-              <Boxes
-                colors={colors}
-                sub="Withdraw Points For Approval"
-                main={0}
-                icon={<FaIndianRupeeSign className="pt-[2px]" />}
-                panelMainColor={colors.bg}
-                panelSecColor={colors.text}
-                button={false}
-                setOpen={setDepositOpen}
-                buttonText={"Request for Withdraw Points"}
-              />
-            </div>
-          </div>
-          <div
-            className="my-[10px] sm:my-[15px] rounded-[15px] pb-[10px] sm:p-[10px] md:px-[15px]"
-            style={{ backgroundColor: colors.dark }}
-          >
-            <WalletTable colors={colors} data={data} />
-          </div>
+          {loginType === "admin" && (
+            <>
+              <div className="mt-[20px] px-[10px] sm:px-[20px]">
+                {/* boxes */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-[15px] sm:gap-[15px]">
+                  <Boxes
+                    colors={colors}
+                    sub="Deposit Points For Approval"
+                    main={admin?.pendingDeposit || 0}
+                    icon={<FaIndianRupeeSign className="pt-[2px]" />}
+                    panelMainColor={colors.bg}
+                    panelSecColor={colors.text}
+                    button={true}
+                    setOpen={setDepositOpen}
+                    buttonText={"Request for Deposit Points"}
+                  />
+                  <Boxes
+                    colors={colors}
+                    sub="Withdraw Points For Approval"
+                    main={0}
+                    icon={<FaIndianRupeeSign className="pt-[2px]" />}
+                    panelMainColor={colors.bg}
+                    panelSecColor={colors.text}
+                    button={false}
+                    setOpen={setDepositOpen}
+                    buttonText={"Request for Withdraw Points"}
+                  />
+                </div>
+              </div>
+              <div
+                className="my-[10px] sm:my-[15px] rounded-[15px] pb-[10px] sm:p-[10px] md:px-[15px]"
+                style={{ backgroundColor: colors.dark }}
+              >
+                <WalletTable colors={colors} data={data} />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
