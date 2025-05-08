@@ -41,7 +41,7 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
             navigate("/");
             setLoader(false);
         }
-    }
+    };
 
     useEffect(() => {
         setLoader(true);

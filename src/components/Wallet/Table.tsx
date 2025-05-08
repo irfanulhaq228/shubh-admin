@@ -1,6 +1,7 @@
 import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
-const WalletTable = ({ colors }: any) => {
+const WalletTable = ({ colors, data }: any) => {
   return (
     <>
       {/* table */}
@@ -11,77 +12,18 @@ const WalletTable = ({ colors }: any) => {
               className="leading-[40px] font-[600] text-[15px]"
               style={{ color: colors.text, backgroundColor: colors.light }}
             >
-              <td className="w-[150px] ps-[5px]">Date Time</td>
-              <td>Narration</td>
-              <td className="w-[150px]">Total<SortingArrows /></td>
+              <td className="w-[150px] ps-[5px]">Sr #</td>
+              <td>Creation Date</td>
+              <td className="w-[250px]">Amount</td>
+              <td className="w-[200px]">Status</td>
             </tr>
           </thead>
           <tbody>
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
-            <TableRows colors={colors} />
+            {data?.map((item: any, index: any) => (
+              <TableRows item={item} index={index + 1} colors={colors} />
+            ))}
           </tbody>
         </table>
-      </div>
-      {/* pagination */}
-      <div className="mt-[10px] flex justify-center">
-        <p
-          className="leading-[32px] text-[13px] font-[500] w-[70px] text-center rounded-s-full border cursor-pointer"
-          style={{
-            borderColor: colors.line,
-            backgroundColor: colors.light,
-            color: colors.subText,
-          }}
-        >
-          Prev
-        </p>
-        <p
-          className="leading-[32px] text-[13px] font-[500] w-[35px] text-center border cursor-pointer"
-          style={{
-            borderColor: colors.line,
-            backgroundColor: colors.light,
-            color: colors.subText,
-          }}
-        >
-          01
-        </p>
-        <p
-          className="leading-[32px] text-[13px] font-[500] w-[35px] text-center border cursor-pointer"
-          style={{
-            borderColor: colors.line,
-            backgroundColor: colors.light,
-            color: colors.subText,
-          }}
-        >
-          02
-        </p>
-        <p
-          className="leading-[32px] text-[13px] font-[500] w-[35px] text-center border cursor-pointer"
-          style={{
-            borderColor: colors.line,
-            backgroundColor: colors.light,
-            color: colors.subText,
-          }}
-        >
-          03
-        </p>
-        <p
-          className="leading-[32px] text-[13px] font-[500] w-[70px] text-center rounded-e-full border cursor-pointer"
-          style={{
-            borderColor: colors.line,
-            backgroundColor: colors.light,
-            color: colors.subText,
-          }}
-        >
-          Next
-        </p>
       </div>
     </>
   );
@@ -89,24 +31,26 @@ const WalletTable = ({ colors }: any) => {
 
 export default WalletTable;
 
-const TableRows = ({ colors }: any) => {
+const TableRows = ({ item, index, colors }: any) => {
   return (
     <tr
       className="text-[13px] font-[500] leading-[34px] border-b"
       style={{ borderColor: colors.line, color: colors.subText }}
     >
-      <td className="ps-[5px]">10 Dec 2025</td>
-      <td>Nothing</td>
-      <td>10,000,000</td>
+      <td className="ps-[5px]">{index}</td>
+      <td>{new Date(item?.createdAt).toDateString()}, {new Date(item?.createdAt).toLocaleTimeString()}</td>
+      <td><FaIndianRupeeSign className="inline-block mt-[-2px]" /> {item?.amount}</td>
+      <td>
+        <p
+          className={`px-4 py-1 rounded-full text-xs font-medium w-[max-content] capitalize min-w-[80px] text-center 
+      ${item?.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ''}
+      ${item?.status === 'decline' ? 'bg-red-100 text-red-700' : ''}
+      ${item?.status === 'approved' ? 'bg-green-100 text-green-700' : ''}
+    `}
+        >
+          {item?.status}
+        </p>
+      </td>
     </tr>
   );
 };
-
-const SortingArrows = () => {
-  return(
-    <div className="inline-block ms-[10px] mb-[-4px]">
-      <BiSolidUpArrow className="h-[9px] cursor-pointer" />
-      <BiSolidDownArrow className="h-[9px] cursor-pointer" />
-    </div>
-  )
-}

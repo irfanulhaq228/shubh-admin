@@ -30,6 +30,50 @@ export const UserSignUpApi = async (data: any) => {
     }
 };
 
+export const DepositRequestApi = async (data: any) => {
+    try {
+        const token = Cookies.get('adminToken');
+
+        const response = await axios.post(`${URL}/admin/create-deposit`, data,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        if (response?.status === 200) {
+            return { status: true, message: "Request Submitted successfully", data: response?.data?.data };
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
+export const GetDepositRequestApi = async () => {
+    try {
+        const token = Cookies.get('adminToken');
+
+        const response = await axios.get(`${URL}/admin/get-deposit`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+        if (response?.status === 200) {
+            return { status: true, data: response?.data?.data };
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
 export const masterReportApi = async () => {
     try {
         const token = Cookies.get('masterToken');
