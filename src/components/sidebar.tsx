@@ -115,7 +115,7 @@ const Sidebar = ({ colors, path }: any) => {
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
         /> */}
-        {/* <Menus
+        <Menus
           title={"Bonus Statement"}
           colors={colors}
           pathEquals={"bonusStatement"}
@@ -124,7 +124,7 @@ const Sidebar = ({ colors, path }: any) => {
           icon={<FaHandHoldingDollar className="text-[20px]" />}
           smallSidebar={smallSidebar}
           disabled={loginType === "staff" ? true : false}
-        /> */}
+        />
         <Menus
           title={"Payment Information"}
           colors={colors}

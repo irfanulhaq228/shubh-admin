@@ -22,6 +22,7 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
         if (response?.status) {
             dispatch(updateWallet(response?.data?.wallet));
             dispatch(updateAdmin(response?.data));
+            localStorage.setItem('enableBanks', response?.data?.enableBanks);
             if (location.pathname !== "/") {
                 if (token) {
                     setLoader(false);

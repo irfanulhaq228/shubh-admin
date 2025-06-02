@@ -46,10 +46,16 @@ const Login = () => {
             if (loginType === "admin") {
                 dispatch(updateLoginType(loginType));
                 localStorage.setItem('loginType', loginType);
+                localStorage.setItem('enableBanks', response?.enableBanks);
                 setLoader(false);
                 setId(response?.id);
                 toast.success(response?.message);
-                return navigate("/dashboard");
+                if (!response?.firstTime) {
+                    return navigate("/dashboard");
+                } else {
+                    setId(response?.id);
+                    setChangePasswordModal(true);
+                }
                 // return setOpenOTP(true);
             } else {
                 setLoader(false);

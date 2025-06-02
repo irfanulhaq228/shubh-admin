@@ -175,15 +175,19 @@ export const adminLoginApi = async (data: { username: string; password: string, 
         const response = await axios.post(`${URL}/admin/login`, { ...data });
         if (response.status === 200) {
             if (data.type === "admin") {
-                Cookies.set('adminToken', response?.data?.token);
-                return { status: true, message: response?.data?.message }
+                if (!response?.data?.firstTime) {
+                    Cookies.set('adminToken', response?.data?.token);
+                    return { status: true, message: response?.data?.message, firstTime: response?.data?.firstTime, enableBanks: response?.data?.enableBanks }
+                } else {
+                    return { status: true, message: "Admin Verified", firstTime: response?.data?.firstTime, id: response.data.id, enableBanks: response?.data?.enableBanks }
+                }
             } else {
                 if (!response?.data?.firstTime) {
                     Cookies.set('adminToken', response?.data?.token);
                     Cookies.set('masterToken', response?.data?.merchantToken);
                     return { status: true, message: "Master LoggedIn Successfully", firstTime: response?.data?.firstTime, enableBanks: response?.data?.enableBanks }
                 } else {
-                    return { status: true, message: "Master Verified", firstTime: response?.data?.firstTime, id: response.data.id }
+                    return { status: true, message: "Master Verified", firstTime: response?.data?.firstTime, id: response.data.id, enableBanks: response?.data?.enableBanks }
                 }
             }
         }
@@ -1282,7 +1286,7 @@ export const withdrawUserPointsApi = async (data: any, id: string) => {
 
 export const createBonusApi = async (data: any) => {
     try {
-        const token = Cookies.get('masterToken');
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
         const response = await axios.post(`${URL}/bonus`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -1299,5 +1303,46 @@ export const createBonusApi = async (data: any) => {
         }
     }
 };
+
+export const getBonusApi = async () => {
+    try {
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.get(`${URL}/bonus/master`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            return { status: true, data: response?.data?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+};
+
+export const fn_updateBonusApi = async (id: any, data: any) => {
+    try {
+        if (data?.status === '') delete data.status;
+        const token = Cookies.get('masterToken') || Cookies.get('adminToken');
+        const response = await axios.put(`${URL}/bonus/update/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            return { status: true, message: 'Bonus Updated' }
+        };
+    } catch (error: any) {
+        if (error?.status === 400) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
 
 export default URL;
