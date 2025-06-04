@@ -10,9 +10,9 @@ import { IoEye } from 'react-icons/io5';
 import { TbLockCog } from "react-icons/tb";
 import { FaIndianRupeeSign } from 'react-icons/fa6';
 import { PiHandCoins, PiHandWithdraw } from 'react-icons/pi';
-import { FaExclamationCircle, FaHandHoldingHeart } from 'react-icons/fa';
+import { FaExclamationCircle, FaHandHoldingHeart, FaMinus, FaPlus } from 'react-icons/fa';
 
-import { createBonusApi, userStatusUpdateApi, userUpdateApi, withdrawUserPointsApi } from '../../api/api';
+import { createBonusApi, updateUserCreditReferenceApi, userStatusUpdateApi, userUpdateApi, withdrawUserPointsApi } from '../../api/api';
 
 const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
     return (
@@ -30,6 +30,7 @@ const UsersTable = ({ colors, data, setData, fn_getUser }: any) => {
                             <td>Phone</td>
                             <td>Balance</td>
                             <td>Exposure</td>
+                            {localStorage.getItem('loginType') === 'master' && (<td>Credit Ref.</td>)}
                             <td>Master Name</td>
                             <td>Action</td>
                         </tr>
@@ -82,6 +83,10 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
     const [bonusAmount, setBonusAmount] = useState("");
 
     const loginType = localStorage.getItem("loginType");
+
+    const [creditReferenceType, setCreditReferenceType] = useState("");
+    const [creditReferenceValue, setCreditReferenceValue] = useState("");
+    const [creditReferenceModal, setCreditReferenceModal] = useState(false);
 
     const handleSwitchChange = async (checked: boolean, e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
@@ -166,6 +171,22 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
         };
     };
 
+    const fn_submitCreditReference = async (e: FormEvent) => {
+        e.preventDefault();
+        if (creditReferenceValue === "") {
+            return toast.error("Enter Credit Reference Value");
+        }
+        const response = await updateUserCreditReferenceApi(user?._id, { creditTransaction: creditReferenceValue, sign: creditReferenceType });
+        if (response?.status) {
+            fn_getUser();
+            setCreditReferenceValue("");
+            toast.success("User Updated");
+            setCreditReferenceModal(false);
+        } else {
+            toast.error(response?.message || "Network Error");
+        }
+    };
+
     return (
         <>
             <tr
@@ -179,6 +200,36 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                 <td>{user?.phone}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.wallet}</td>
                 <td><FaIndianRupeeSign className='inline-block me-[4px]' />{user.exposure}</td>
+                {localStorage.getItem('loginType') === 'master' && (
+                    <td>
+                        <div className='flex items-center'>
+                            <FaIndianRupeeSign className='mt-[2px]' />
+                            <p className='mt-[2px]'>{user?.creditTransaction}</p>
+                            <button
+                                className='text-[11px] rounded-[5px] ms-[15px] h-[30px] w-[30px] leading-[32px] text-center px-[9px]'
+                                style={{ backgroundColor: colors.text, color: colors.bg }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCreditReferenceType("-");
+                                    setCreditReferenceModal(true);
+                                }}
+                            >
+                                <FaMinus className='scale-125' />
+                            </button>
+                            <button
+                                className='text-[11px] rounded-[5px] ms-[5px] h-[30px] w-[30px] leading-[32px] text-center px-[9px]'
+                                style={{ backgroundColor: colors.text, color: colors.bg }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCreditReferenceType("+");
+                                    setCreditReferenceModal(true);
+                                }}
+                            >
+                                <FaPlus className='scale-125' />
+                            </button>
+                        </div>
+                    </td>
+                )}
                 <td className='capitalize'>{user?.master?.name}</td>
                 <td className='max-w-[100px] flex flex-row items-center gap-[10px]'>
                     <Switch size="small" defaultChecked={!user.disabled} title='disable' onClick={handleSwitchChange} />
@@ -364,6 +415,35 @@ const TableRows = ({ user, index, colors, link, setData, fn_getUser }: any) => {
                             />
                         </div>
                     )}
+                    <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
+                        Submit
+                    </button>
+                </form>
+            </Modal>
+            {/* credit reference modal */}
+            <Modal
+                title={''}
+                open={creditReferenceModal}
+                onOk={() => setCreditReferenceModal(false)}
+                onCancel={() => setCreditReferenceModal(false)}
+                centered
+                footer={null}
+                style={{ fontFamily: "Roboto" }}
+                width={600}
+            >
+                <p className="text-[22px] font-[700]">{creditReferenceType === "+" ? "Add Credit Reference" : "Minus Credit Reference"}</p>
+                <form className="pb-[15px] pt-[20px] flex flex-col gap-[10px]" onSubmit={fn_submitCreditReference}>
+                    <div className="flex flex-col">
+                        <p className="font-[500]">Enter Credit Reference</p>
+                        <input
+                            type='number'
+                            step={0.01}
+                            value={creditReferenceValue}
+                            onChange={(e) => setCreditReferenceValue(e.target.value)}
+                            placeholder="Enter Credit Reference"
+                            className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"
+                        />
+                    </div>
                     <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
                         Submit
                     </button>

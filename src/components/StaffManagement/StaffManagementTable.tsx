@@ -2,10 +2,10 @@ import { Modal, Switch } from "antd";
 import toast from "react-hot-toast";
 import { FormEvent, useState } from "react";
 
-import { updateStaffApi } from "../../api/api";
+import { updateCreditReferenceApi, updateStaffApi } from "../../api/api";
 
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import { FaExclamationCircle, FaLock, FaLockOpen } from "react-icons/fa";
+import { FaExclamationCircle, FaLock, FaLockOpen, FaMinus, FaPlus } from "react-icons/fa";
 
 const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
     return (
@@ -23,6 +23,7 @@ const StaffManagementTable = ({ data, colors, fn_getStaffs }: any) => {
                             <td>Email Address</td>
                             <td>Wallet</td>
                             <td>OTP</td>
+                            <td>Credit Reference</td>
                             <td>Master Type</td>
                             <td>Action</td>
                         </tr>
@@ -49,9 +50,13 @@ export default StaffManagementTable;
 const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
 
     const [points, setPoints] = useState("");
-    const [givePointsModel, setGivePointsModel] = useState(false);
-    const [verified, setVerified] = useState(item?.verified);
     const [bets, setBets] = useState(item?.bets);
+    const [verified, setVerified] = useState(item?.verified);
+    const [givePointsModel, setGivePointsModel] = useState(false);
+
+    const [creditReferenceType, setCreditReferenceType] = useState("");
+    const [creditReferenceValue, setCreditReferenceValue] = useState("");
+    const [creditReferenceModal, setCreditReferenceModal] = useState(false);
 
     const fn_toggleVerified = async (checked: boolean) => {
         const response = await updateStaffApi(item._id, { verified: checked });
@@ -104,6 +109,22 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
         }
     };
 
+    const fn_submitCreditReference = async(e: FormEvent) => {
+        e.preventDefault();
+        if (creditReferenceValue === "") {
+            return toast.error("Enter Credit Reference Value");
+        }
+        const response = await updateCreditReferenceApi(item?._id, { creditTransaction: creditReferenceValue, sign: creditReferenceType });
+        if (response?.status) {
+            fn_getStaffs();
+            setCreditReferenceValue("");
+            toast.success("Master Updated");
+            setCreditReferenceModal(false);
+        } else {
+            toast.error(response?.message || "Network Error");
+        }
+    };
+
     return (
         <>
             <tr
@@ -115,6 +136,32 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                 <td>{item?.email}</td>
                 <td><FaIndianRupeeSign className="inline-block mt-[-1px]" /> {item?.wallet || 0}</td>
                 <td>{item?.validate}</td>
+                <td>
+                    <div className='flex items-center'>
+                        <FaIndianRupeeSign className='mt-[2px]' />
+                        <p className='mt-[2px]'>{item?.creditTransaction}</p>
+                        <button
+                            className='text-[11px] rounded-[5px] ms-[15px] h-[30px] w-[30px] leading-[32px] text-center px-[9px]'
+                            style={{ backgroundColor: colors.text, color: colors.bg }}
+                            onClick={() => {
+                                setCreditReferenceType("-");
+                                setCreditReferenceModal(true);
+                            }}
+                        >
+                            <FaMinus className='scale-125' />
+                        </button>
+                        <button
+                            className='text-[11px] rounded-[5px] ms-[5px] h-[30px] w-[30px] leading-[32px] text-center px-[9px]'
+                            style={{ backgroundColor: colors.text, color: colors.bg }}
+                            onClick={() => {
+                                setCreditReferenceType("+");
+                                setCreditReferenceModal(true);
+                            }}
+                        >
+                            <FaPlus className='scale-125' />
+                        </button>
+                    </div>
+                </td>
                 <td>
                     {item?.type === "main" ? (
                         <p className="text-[11px] w-[90px] rounded-[100px] h-[28px] flex justify-center items-center cursor-not-allowed" style={{ backgroundColor: colors.dark, color: colors.text }}>Default Master</p>
@@ -169,6 +216,35 @@ const TableRows = ({ colors, item, index, fn_getStaffs }: any) => {
                     </button>
                 </form>
             </Modal >
+            {/* credit reference modal */}
+            <Modal
+                title={''}
+                open={creditReferenceModal}
+                onOk={() => setCreditReferenceModal(false)}
+                onCancel={() => setCreditReferenceModal(false)}
+                centered
+                footer={null}
+                style={{ fontFamily: "Roboto" }}
+                width={600}
+            >
+                <p className="text-[22px] font-[700]">{creditReferenceType === "+" ? "Add Credit Reference" : "Minus Credit Reference"}</p>
+                <form className="pb-[15px] pt-[20px] flex flex-col gap-[10px]" onSubmit={fn_submitCreditReference}>
+                    <div className="flex flex-col">
+                        <p className="font-[500]">Enter Credit Reference</p>
+                        <input
+                            type='number'
+                            step={0.01}
+                            value={creditReferenceValue}
+                            onChange={(e) => setCreditReferenceValue(e.target.value)}
+                            placeholder="Enter Credit Reference"
+                            className="w-full h-[40px] border rounded-[10px] px-[10px] font-[500] text-[15px] focus:outline-none focus:border-gray-400"
+                        />
+                    </div>
+                    <button className="w-full rounded-[10px] mt-[18px] text-white flex justify-center items-center h-[40px] font-[500] text-[16px]" style={{ backgroundColor: colors.text }}>
+                        Submit
+                    </button>
+                </form>
+            </Modal>
         </>
     );
 };

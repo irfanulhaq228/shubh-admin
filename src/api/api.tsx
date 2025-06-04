@@ -1184,6 +1184,36 @@ export const updateStaffApi = async (id: any, data: any) => {
     }
 };
 
+export const updateCreditReferenceApi = async (id: string, data: any) => {
+    try {
+        const response = await axios.post(`${URL}/staff/creditTrn/${id}`, data);
+        if (response.status === 200) {
+            return { status: true, data: response?.data?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 403) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
+export const updateUserCreditReferenceApi = async (id: string, data: any) => {
+    try {
+        const response = await axios.post(`${URL}/user/creditTrn/${id}`, data);
+        if (response.status === 200) {
+            return { status: true, data: response?.data?.data }
+        }
+    } catch (error: any) {
+        if (error?.status === 403) {
+            return { status: false, message: error?.response?.data?.message };
+        } else {
+            return { status: false, message: "Network Error" }
+        }
+    }
+}
+
 export const getStaffsApi = async () => {
     try {
         const token = Cookies.get('adminToken');
